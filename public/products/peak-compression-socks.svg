@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="Peak Compression Socks">
+  <rect width="600" height="600" fill="#DDE4EA"/>
+  <g transform="translate(192 192) scale(2.16)" fill="none" stroke="#3A4656" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M34 6 L60 6 L60 60 L84 76 Q92 84 84 92 Q78 96 68 94 L46 88 Q34 84 34 70 Z"/>
+    <path d="M34 18 L60 18"/>
+  </g>
+</svg>

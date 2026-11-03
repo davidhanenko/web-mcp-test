@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="Ember Down Jacket">
+  <rect width="600" height="600" fill="#E1E6E1"/>
+  <g transform="translate(192 192) scale(2.16)" fill="none" stroke="#3A4656" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M30 12 Q50 22 70 12 L88 22 L96 46 L84 52 L78 40 L78 90 L22 90 L22 40 L16 52 L4 46 L12 22 Z"/>
+    <path d="M50 18 L50 90"/>
+  </g>
+</svg>
