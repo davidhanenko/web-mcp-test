@@ -1,112 +1,94 @@
-"use client";
-
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 import { getProduct } from "@/lib/catalog";
-import type { CartLine, CartView, Size } from "@/lib/types";
+import type { CartDetails, CartItem, Size } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 
-export const CART_STORAGE_KEY = "northline-cart";
-
-type CartState = {
-  items: CartLine[];
-  addToCart: (id: string, size: string, qty: number) => void;
-  removeFromCart: (id: string, size?: string) => void;
-  getCart: () => CartView;
-  clearCart: () => void;
-};
+/** Cart business rules. Plain functions with no React or store code, so they run anywhere. */
 
 function isSize(value: string): value is Size {
   return (SIZES as readonly string[]).includes(value);
 }
 
-function viewFromItems(items: CartLine[]): CartView {
-  const viewItems = items.map((line) => {
-    const product = getProduct(line.id);
-    const price = product?.price ?? 0;
+/** Throws unless `quantity` is a whole number ≥ 1 (or ≥ 0 when `allowZero`). */
+export function assertValidQuantity(
+  quantity: number,
+  { allowZero = false } = {},
+): void {
+  if (!Number.isInteger(quantity) || quantity < (allowZero ? 0 : 1)) {
+    throw new Error("Quantity must be a positive whole number.");
+  }
+}
+
+export function assertProductExists(productId: string): void {
+  if (!getProduct(productId)) {
+    throw new Error(`Unknown product: ${productId}`);
+  }
+}
+
+/**
+ * Throws unless the shopper can have `quantity` units of the product in `size`:
+ * the product exists, comes in that size, and has that many in stock.
+ */
+export function assertAvailable(
+  productId: string,
+  size: string,
+  quantity: number,
+): asserts size is Size {
+  const product = getProduct(productId);
+  if (!product) {
+    throw new Error(`Unknown product: ${productId}`);
+  }
+
+  if (!isSize(size) || !product.sizes.includes(size)) {
+    throw new Error(`Invalid size ${size} for ${product.name}.`);
+  }
+
+  const inStock = product.stock[size] ?? 0;
+  if (inStock <= 0) {
+    throw new Error(`${product.name} in size ${size} is out of stock.`);
+  }
+
+  if (quantity > inStock) {
+    throw new Error(`Only ${inStock} left in size ${size} for ${product.name}.`);
+  }
+}
+
+export function findCartItem(
+  items: CartItem[],
+  productId: string,
+  size: string,
+): CartItem | undefined {
+  return items.find(
+    (item) => item.productId === productId && item.size === size,
+  );
+}
+
+/** Number of units across all items, e.g. 2 jackets + 1 socks = 3. */
+export function getTotalQuantity(
+  items: readonly Pick<CartItem, "quantity">[],
+): number {
+  return items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+/**
+ * Joins the stored cart items with the catalog to get names, images, prices,
+ * subtotals and the cart total. Prices always come from the catalog, never from storage.
+ */
+export function getCartDetails(items: CartItem[]): CartDetails {
+  const detailedItems = items.map((item) => {
+    const product = getProduct(item.productId);
+    const unitPrice = product?.price ?? 0;
     return {
-      ...line,
-      name: product?.name ?? line.id,
-      price,
+      ...item,
+      name: product?.name ?? item.productId,
       image: product?.image ?? "",
-      lineTotal: price * line.qty,
+      unitPrice,
+      subtotal: unitPrice * item.quantity,
     };
   });
 
   return {
-    items: viewItems,
-    total: viewItems.reduce((sum, line) => sum + line.lineTotal, 0),
+    items: detailedItems,
+    total: detailedItems.reduce((sum, item) => sum + item.subtotal, 0),
+    totalQuantity: getTotalQuantity(items),
   };
 }
-
-export const useCart = create<CartState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      addToCart(id, size, qty) {
-        if (!Number.isInteger(qty) || qty < 1) {
-          throw new Error("Quantity must be a positive whole number.");
-        }
-
-        const product = getProduct(id);
-        if (!product) {
-          throw new Error(`Unknown product: ${id}`);
-        }
-
-        if (!isSize(size) || !product.sizes.includes(size)) {
-          throw new Error(`Invalid size ${size} for ${product.name}.`);
-        }
-
-        const available = product.stock[size] ?? 0;
-        const currentQty =
-          get().items.find((line) => line.id === id && line.size === size)?.qty ??
-          0;
-        const nextQty = currentQty + qty;
-
-        if (available <= 0) {
-          throw new Error(`${product.name} in size ${size} is out of stock.`);
-        }
-
-        if (nextQty > available) {
-          throw new Error(
-            `Only ${available} left in size ${size} for ${product.name}.`,
-          );
-        }
-
-        set((state) => {
-          const existing = state.items.findIndex(
-            (line) => line.id === id && line.size === size,
-          );
-          if (existing === -1) {
-            return { items: [...state.items, { id, size, qty }] };
-          }
-          const items = state.items.map((line, index) =>
-            index === existing ? { ...line, qty: nextQty } : line,
-          );
-          return { items };
-        });
-      },
-      removeFromCart(id, size) {
-        set((state) => ({
-          items: state.items.filter((line) => {
-            if (line.id !== id) return true;
-            if (size === undefined) return false;
-            return line.size !== size;
-          }),
-        }));
-      },
-      getCart() {
-        return viewFromItems(get().items);
-      },
-      clearCart() {
-        set({ items: [] });
-      },
-    }),
-    {
-      name: CART_STORAGE_KEY,
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }),
-      skipHydration: true,
-    },
-  ),
-);

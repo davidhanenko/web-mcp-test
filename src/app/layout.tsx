@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { CartDrawer } from "@/components/CartDrawer";
-import { CartHydration } from "@/components/CartHydration";
-import { Header } from "@/components/Header";
-import { ToastRegion } from "@/components/ToastRegion";
+import { Archivo } from "next/font/google";
+import { CartDrawer } from "@/app/components/CartDrawer";
+import { SavedCartLoader } from "@/app/components/SavedCartLoader";
+import { Footer } from "@/app/components/Footer";
+import { Header } from "@/app/components/Header";
+import { ToastRegion } from "@/app/components/ToastRegion";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  axes: ["wdth"],
 });
 
 export const metadata: Metadata = {
@@ -23,16 +20,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${archivo.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
-        <CartHydration />
+        <SavedCartLoader />
         <Header />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 lg:px-8">
           {children}
         </main>
+        <Footer />
         <CartDrawer />
         <ToastRegion />
       </body>

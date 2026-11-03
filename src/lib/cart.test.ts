@@ -1,65 +1,48 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { useCart } from "@/lib/cart";
+import { describe, expect, it } from "vitest";
+import { assertAvailable, getCartDetails, getTotalQuantity } from "@/lib/cart";
 
-function resetCart() {
-  localStorage.clear();
-  useCart.setState({ items: [] });
-}
-
-describe("useCart", () => {
-  beforeEach(() => {
-    resetCart();
-  });
-
-  it("adds an item through getState", () => {
-    useCart.getState().addToCart("mist-trail-jacket", "M", 1);
-    const cart = useCart.getState().getCart();
-    expect(cart.items).toHaveLength(1);
+describe("getCartDetails", () => {
+  it("adds names, unit prices, subtotals and totals from the catalog", () => {
+    const cart = getCartDetails([
+      { productId: "mist-trail-jacket", size: "M", quantity: 2 },
+      { productId: "merino-crew-socks", size: "S", quantity: 1 },
+    ]);
     expect(cart.items[0]).toMatchObject({
-      id: "mist-trail-jacket",
-      size: "M",
-      qty: 1,
+      name: "Mist Trail Jacket",
+      unitPrice: 128,
+      subtotal: 256,
     });
-    expect(cart.total).toBe(128);
+    expect(cart.total).toBe(256 + 18);
+    expect(cart.totalQuantity).toBe(3);
   });
 
-  it("adds twice to the same line", () => {
-    const { addToCart, getCart } = useCart.getState();
-    addToCart("mist-trail-jacket", "M", 1);
-    addToCart("mist-trail-jacket", "M", 1);
-    const cart = getCart();
-    expect(cart.items).toHaveLength(1);
-    expect(cart.items[0].qty).toBe(2);
-    expect(cart.total).toBe(256);
+  it("returns an empty cart for no items", () => {
+    expect(getCartDetails([])).toEqual({
+      items: [],
+      total: 0,
+      totalQuantity: 0,
+    });
   });
+});
 
-  it("throws for an invalid size", () => {
-    expect(() =>
-      useCart.getState().addToCart("mist-trail-jacket", "XXL", 1),
-    ).toThrow(/invalid size/i);
+describe("getTotalQuantity", () => {
+  it("sums quantities across items", () => {
+    expect(getTotalQuantity([{ quantity: 2 }, { quantity: 3 }])).toBe(5);
+    expect(getTotalQuantity([])).toBe(0);
   });
+});
 
-  it("throws when out of stock", () => {
-    expect(() =>
-      useCart.getState().addToCart("dusk-wind-shell", "M", 1),
-    ).toThrow(/out of stock/i);
-  });
-
-  it("throws for an unknown product", () => {
-    expect(() => useCart.getState().addToCart("nope", "M", 1)).toThrow(
-      /unknown product/i,
+describe("assertAvailable", () => {
+  it("accepts an available quantity and rejects bad sizes and stock", () => {
+    expect(() => assertAvailable("mist-trail-jacket", "M", 1)).not.toThrow();
+    expect(() => assertAvailable("mist-trail-jacket", "XXL", 1)).toThrow(
+      /invalid size/i,
     );
-  });
-
-  it("removes a line and updates the total", () => {
-    const { addToCart, removeFromCart, getCart } = useCart.getState();
-    addToCart("mist-trail-jacket", "M", 1);
-    addToCart("merino-crew-socks", "S", 2);
-    expect(getCart().total).toBe(128 + 36);
-    removeFromCart("mist-trail-jacket", "M");
-    const cart = getCart();
-    expect(cart.items).toHaveLength(1);
-    expect(cart.items[0].id).toBe("merino-crew-socks");
-    expect(cart.total).toBe(36);
+    expect(() => assertAvailable("dusk-wind-shell", "M", 1)).toThrow(
+      /out of stock/i,
+    );
+    expect(() => assertAvailable("mist-trail-jacket", "M", 99)).toThrow(
+      /only 8 left/i,
+    );
   });
 });

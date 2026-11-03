@@ -1,16 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3ead9;
-  --foreground: #1c2e24;
+  --background: #ffffff;
+  --foreground: #0f1a2b;
+  --ink: #0f1a2b;
+  --accent: #ff6a13;
+  --accent-hover: #f05d08;
+  --muted: #4a5568;
+  --panel: #f1f2f4;
+  --line: #cbd0d8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-serif: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-muted: var(--muted);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+  --font-sans: var(--font-archivo);
+}
+
+@utility font-display {
+  font-family: var(--font-archivo);
+  font-stretch: 125%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+@utility label-caps {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 body {
@@ -18,14 +45,31 @@ body {
   color: var(--foreground);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Max-price slider */
+.range-ink {
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--ink);
+  cursor: pointer;
+}
+.range-ink::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--panel);
+}
+.range-ink::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--panel);
 }

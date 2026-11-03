@@ -24,20 +24,27 @@ export type SearchFilters = {
   inStockOnly?: boolean;
 };
 
-export type CartLine = {
-  id: string;
+/** What the cart stores (and persists): which product, in which size, how many. */
+export type CartItem = {
+  productId: string;
   size: Size;
-  qty: number;
+  quantity: number;
 };
 
-export type CartViewItem = CartLine & {
+/** A cart item joined with its product's current catalog data. */
+export type CartItemDetails = CartItem & {
   name: string;
-  price: number;
   image: string;
-  lineTotal: number;
+  unitPrice: number;
+  /** unitPrice × quantity */
+  subtotal: number;
 };
 
-export type CartView = {
-  items: CartViewItem[];
+/** The whole cart as shown to the shopper (and returned by `getCart()`). */
+export type CartDetails = {
+  items: CartItemDetails[];
+  /** Price of everything in the cart. Named by the spec: `getCart(): { items, total }`. */
   total: number;
+  /** Number of units across all items (what the cart badge shows). */
+  totalQuantity: number;
 };

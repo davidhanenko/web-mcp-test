@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AddToCartForm } from "@/components/AddToCartForm";
+import { AddToCartForm } from "./components/AddToCartForm";
+import { Badge } from "@/app/components/Badge";
 import { getAllProducts, getProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 
@@ -9,41 +11,69 @@ export function generateStaticParams() {
 
 export default async function ProductPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+}: PageProps<"/products/[id]">) {
   const { id } = await params;
   const product = getProduct(id);
   if (!product) notFound();
 
+  const categoryLabel =
+    product.category.charAt(0).toUpperCase() + product.category.slice(1);
+
   return (
-    <article className="grid gap-10 md:grid-cols-2">
-      <div className="aspect-[4/5] w-full overflow-hidden bg-[#243044]">
-        <img
-          src={product.image}
-          alt={product.name}
-          width={480}
-          height={600}
-          className="h-full w-full object-cover"
-        />
-      </div>
-      <div>
-        <p className="text-sm capitalize text-[#1c2e24]/70">{product.category}</p>
-        <h1 className="mt-1 font-serif text-4xl">{product.name}</h1>
-        <p className="mt-3 text-xl">{formatPrice(product.price)}</p>
-        <p className="mt-4 max-w-md leading-7">{product.description}</p>
-        <ul className="mt-4 flex flex-wrap gap-2 text-sm">
-          {product.tags.map((tag) => (
-            <li
-              key={tag}
-              className="rounded-full border border-[#1c2e24]/15 px-3 py-1"
+    <div>
+      <nav aria-label="Breadcrumb" className="mb-8">
+        <ol className="flex flex-wrap items-center gap-2 text-muted">
+          <li>
+            <Link href="/" className="underline underline-offset-2 hover:text-ink">
+              Shop
+            </Link>
+          </li>
+          <li aria-hidden>/</li>
+          <li>
+            <Link
+              href={`/?category=${product.category}`}
+              className="underline underline-offset-2 hover:text-ink"
             >
-              {tag}
-            </li>
-          ))}
-        </ul>
-        <AddToCartForm product={product} />
-      </div>
-    </article>
+              {categoryLabel}
+            </Link>
+          </li>
+          <li aria-hidden>/</li>
+          <li aria-current="page" className="font-semibold text-ink">
+            {product.name}
+          </li>
+        </ol>
+      </nav>
+
+      <article className="grid gap-10 md:grid-cols-2 lg:gap-16">
+        <div className="aspect-square w-full overflow-hidden rounded-lg">
+          <img
+            src={product.image}
+            alt={product.name}
+            width={600}
+            height={600}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="max-w-xl">
+          <ul className="flex flex-wrap gap-2" aria-label="Features">
+            {product.tags.map((tag, index) => (
+              <li key={tag}>
+                <Badge tone={index === 0 ? "dark" : "light"}>{tag}</Badge>
+              </li>
+            ))}
+          </ul>
+          <h1 className="font-display mt-4 text-4xl sm:text-5xl lg:text-[3.5rem]">
+            {product.name}
+          </h1>
+          <p className="mt-5 text-3xl font-extrabold">
+            {formatPrice(product.price)}
+          </p>
+          <p className="mt-5 text-lg leading-8 text-slate-700">
+            {product.description}
+          </p>
+          <AddToCartForm product={product} />
+        </div>
+      </article>
+    </div>
   );
 }
