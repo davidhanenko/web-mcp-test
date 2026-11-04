@@ -5,6 +5,7 @@ import { SavedCartLoader } from "@/app/components/SavedCartLoader";
 import { Footer } from "@/app/components/Footer";
 import { Header } from "@/app/components/Header";
 import { ToastRegion } from "@/app/components/ToastRegion";
+import { WebMcpTools } from "@/app/components/WebMcpTools";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
         <CartDrawer />
         <ToastRegion />
+        <WebMcpTools />
       </body>
     </html>
   );

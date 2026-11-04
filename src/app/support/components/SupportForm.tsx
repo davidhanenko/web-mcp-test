@@ -16,7 +16,11 @@ export function SupportForm() {
       {submitted ? (
         <SentMessage onReset={() => setSubmitted(false)} />
       ) : (
+        // toolname makes this form a WebMCP tool. Without toolautosubmit the agent
+        // only fills it in; the customer clicks Send.
         <form
+          toolname="contact_support"
+          tooldescription="Write to customer support about an order, sizing or returns. Fills in the form; the customer reviews it and clicks Send."
           className="space-y-6"
           onSubmit={(event) => {
             event.preventDefault();
@@ -31,6 +35,7 @@ export function SupportForm() {
               <input
                 id="name"
                 name="name"
+                toolparamdescription="The customer's full name."
                 autoComplete="name"
                 required
                 className={`${field} h-14`}
@@ -43,6 +48,7 @@ export function SupportForm() {
               <input
                 id="email"
                 name="email"
+                toolparamdescription="The customer's email address for the reply."
                 type="email"
                 autoComplete="email"
                 required
@@ -57,6 +63,7 @@ export function SupportForm() {
             <select
               id="topic"
               name="topic"
+              toolparamdescription="What the message is about."
               required
               className={`${field} h-14`}
             >
@@ -74,6 +81,7 @@ export function SupportForm() {
             <textarea
               id="message"
               name="message"
+              toolparamdescription="The customer's question, in full sentences."
               required
               rows={7}
               className={`${field} py-3`}
