@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { SuccessMark } from "@/app/components/SuccessMark";
 import { useIsSavedCartLoaded } from "@/hooks/useIsSavedCartLoaded";
 import { useCartDetails } from "@/hooks/useCartDetails";
@@ -55,10 +57,10 @@ export function CheckoutClient() {
           <ul className="mt-4">
             {items.map((item) => (
               <li
-                key={`${item.productId}-${item.size}`}
+                key={`${item.productId}-${item.size}-${item.color}`}
                 className="flex items-center gap-5 border-b border-line/70 py-6"
               >
-                <img
+                <Image
                   src={item.image}
                   alt=""
                   width={600}
@@ -68,7 +70,8 @@ export function CheckoutClient() {
                 <div className="min-w-0 flex-1">
                   <p className="text-lg font-bold">{item.name}</p>
                   <p className="text-muted">
-                    Size {item.size} · Qty {item.quantity}
+                    <ColorSwatch hex={item.colorHex} size={14} />{" "}
+                    {item.colorName} · Size {item.size} · Qty {item.quantity}
                   </p>
                 </div>
                 <p className="shrink-0 text-lg font-bold">

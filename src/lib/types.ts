@@ -4,13 +4,22 @@ export type Category = (typeof CATEGORIES)[number];
 export const SIZES = ["XS", "S", "M", "L", "XL"] as const;
 export type Size = (typeof SIZES)[number];
 
+/** One color a product comes in, with its own stock per size. */
+export type ProductColor = {
+  id: string;
+  name: string;
+  /** CSS color used for the swatch. */
+  hex: string;
+  stock: Partial<Record<Size, number>>;
+};
+
 export type Product = {
   id: string;
   name: string;
   category: Category;
   price: number;
   sizes: Size[];
-  stock: Partial<Record<Size, number>>;
+  colors: ProductColor[];
   tags: string[];
   description: string;
   image: string;
@@ -24,10 +33,12 @@ export type SearchFilters = {
   inStockOnly?: boolean;
 };
 
-/** What the cart stores (and persists): which product, in which size, how many. */
+/** What the cart stores (and persists): which product, in which size and color, how many. */
 export type CartItem = {
   productId: string;
   size: Size;
+  /** `ProductColor.id` */
+  color: string;
   quantity: number;
 };
 
@@ -35,6 +46,8 @@ export type CartItem = {
 export type CartItemDetails = CartItem & {
   name: string;
   image: string;
+  colorName: string;
+  colorHex: string;
   unitPrice: number;
   /** unitPrice × quantity */
   subtotal: number;

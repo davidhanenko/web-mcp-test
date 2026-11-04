@@ -1,10 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/app/components/Badge";
+import { ColorTag } from "@/app/components/ColorTag";
+import { hasStock } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
 export function isSoldOut(product: Product): boolean {
-  return product.sizes.every((size) => (product.stock[size] ?? 0) <= 0);
+  return !hasStock(product);
 }
 
 export function ProductCard({ product }: { product: Product }) {
@@ -15,7 +18,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article>
       <Link href={`/products/${product.id}`} className="group block">
         <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-          <img
+          <Image
             src={product.image}
             alt=""
             width={600}
@@ -28,6 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
               {soldOut ? <Badge tone="white">Sold out</Badge> : null}
             </div>
           ) : null}
+          <ColorTag color={product.colors[0]} />
         </div>
         <div className="mt-4 flex items-baseline justify-between gap-3">
           <h2 className="text-lg font-bold group-hover:underline">

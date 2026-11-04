@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CloseIcon } from "@/app/components/icons";
 import { QuantityStepper } from "@/app/components/QuantityStepper";
 import { useCartDetails } from "@/hooks/useCartDetails";
-import { getProduct } from "@/lib/catalog";
+import { getProduct, getStock } from "@/lib/catalog";
+import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
@@ -56,9 +58,14 @@ export function CartDrawer() {
     };
   }, [isOpen, close]);
 
-  function changeQuantity(productId: string, size: string, quantity: number) {
+  function changeQuantity(
+    productId: string,
+    size: string,
+    color: string,
+    quantity: number,
+  ) {
     try {
-      setQuantity(productId, size, quantity);
+      setQuantity(productId, size, color, quantity);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not update cart.");
@@ -110,13 +117,16 @@ export function CartDrawer() {
         ) : (
           <ul className="min-h-0 flex-1 overflow-auto px-6">
             {items.map((item) => {
-              const inStock = getProduct(item.productId)?.stock[item.size] ?? item.quantity;
+              const product = getProduct(item.productId);
+              const inStock = product
+                ? getStock(product, item.color, item.size)
+                : item.quantity;
               return (
                 <li
-                  key={`${item.productId}-${item.size}`}
+                  key={`${item.productId}-${item.size}-${item.color}`}
                   className="flex gap-4 border-b border-line/70 py-6"
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt=""
                     width={600}
@@ -128,7 +138,8 @@ export function CartDrawer() {
                       <div>
                         <p className="font-bold">{item.name}</p>
                         <p className="mt-0.5 text-sm text-muted">
-                          Size {item.size}
+                          <ColorSwatch hex={item.colorHex} />{" "}
+                          {item.colorName} · Size {item.size}
                           {item.quantity > 1
                             ? ` · ${formatPrice(item.unitPrice)} each`
                             : null}
@@ -144,13 +155,18 @@ export function CartDrawer() {
                         value={item.quantity}
                         max={inStock}
                         onChange={(quantity) =>
-                          changeQuantity(item.productId, item.size, quantity)
+                          changeQuantity(
+                            item.productId,
+                            item.size,
+                            item.color,
+                            quantity,
+                          )
                         }
                       />
                       <button
                         type="button"
                         className="text-sm text-muted underline underline-offset-2 hover:text-ink"
-                        onClick={() => removeFromCart(item.productId, item.size)}
+                        onClick={() => removeFromCart(item.productId, item.size, item.color)}
                       >
                         Remove<span className="sr-only"> {item.name}</span>
                       </button>

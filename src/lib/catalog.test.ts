@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getProduct, searchProducts } from "@/lib/catalog";
+import { getProduct, getStock, hasStock, searchProducts } from "@/lib/catalog";
 
 describe("searchProducts", () => {
   it("matches query against name, description, and tags", () => {
@@ -12,6 +12,14 @@ describe("searchProducts", () => {
 
     const byDescription = searchProducts({ query: "hipbelt" });
     expect(byDescription.map((p) => p.id)).toEqual(["cedar-rain-shell"]);
+  });
+
+  it("matches query against color names", () => {
+    const results = searchProducts({ query: "burgundy" });
+    expect(results.length).toBeGreaterThan(0);
+    expect(
+      results.every((p) => p.colors.some((c) => c.name === "Burgundy")),
+    ).toBe(true);
   });
 
   it("filters by category", () => {
@@ -35,7 +43,7 @@ describe("searchProducts", () => {
   it("filters to in-stock items", () => {
     const inStockM = searchProducts({ size: "M", inStockOnly: true });
     expect(inStockM.map((p) => p.id)).not.toContain("dusk-wind-shell");
-    expect(inStockM.every((p) => (p.stock.M ?? 0) > 0)).toBe(true);
+    expect(inStockM.every((p) => hasStock(p, "M"))).toBe(true);
   });
 
   it("combines filters", () => {
@@ -53,7 +61,7 @@ describe("searchProducts", () => {
           p.category === "socks" &&
           p.price <= 25 &&
           p.sizes.includes("M") &&
-          (p.stock.M ?? 0) > 0,
+          hasStock(p, "M"),
       ),
     ).toBe(true);
   });
@@ -68,10 +76,21 @@ describe("searchProducts", () => {
     });
     expect(results.length).toBeGreaterThanOrEqual(2);
     expect(results.every((p) => p.price < 150)).toBe(true);
-    expect(results.every((p) => p.sizes.includes("M") && (p.stock.M ?? 0) > 0)).toBe(
+    expect(results.every((p) => p.sizes.includes("M") && hasStock(p, "M"))).toBe(
       true,
     );
     expect(results.every((p) => p.tags.includes("waterproof"))).toBe(true);
+  });
+});
+
+describe("getStock and hasStock", () => {
+  it("reads stock per color and size", () => {
+    const jacket = getProduct("mist-trail-jacket")!;
+    expect(getStock(jacket, "blue", "M")).toBe(3);
+    expect(getStock(jacket, "no-such-color", "M")).toBe(0);
+    expect(hasStock(jacket, "M", "blue")).toBe(true);
+    expect(hasStock(jacket, "M", "no-such-color")).toBe(false);
+    expect(hasStock(getProduct("dusk-wind-shell")!, "M")).toBe(false);
   });
 });
 

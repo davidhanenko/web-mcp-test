@@ -1,5 +1,5 @@
 import productsData from "@/data/products.json";
-import type { Product, SearchFilters, Size } from "@/lib/types";
+import type { Product, ProductColor, SearchFilters, Size } from "@/lib/types";
 
 const products = productsData as Product[];
 
@@ -11,11 +11,32 @@ export function getAllProducts(): Product[] {
   return products;
 }
 
-function hasStock(product: Product, size?: Size): boolean {
-  if (size) {
-    return (product.stock[size] ?? 0) > 0;
-  }
-  return product.sizes.some((available) => (product.stock[available] ?? 0) > 0);
+export function getColor(
+  product: Product,
+  colorId: string,
+): ProductColor | undefined {
+  return product.colors.find((color) => color.id === colorId);
+}
+
+/** Units in stock for one color and size (0 for an unknown color). */
+export function getStock(
+  product: Product,
+  colorId: string,
+  size: Size,
+): number {
+  return getColor(product, colorId)?.stock[size] ?? 0;
+}
+
+/** True when any color (or only `colorId`, if given) has stock in `size` (or in any size). */
+export function hasStock(
+  product: Product,
+  size?: Size,
+  colorId?: string,
+): boolean {
+  const sizes = size ? [size] : product.sizes;
+  return product.colors
+    .filter((color) => colorId === undefined || color.id === colorId)
+    .some((color) => sizes.some((available) => (color.stock[available] ?? 0) > 0));
 }
 
 export function searchProducts(filters: SearchFilters = {}): Product[] {
@@ -23,7 +44,12 @@ export function searchProducts(filters: SearchFilters = {}): Product[] {
 
   return products.filter((product) => {
     if (query) {
-      const haystack = [product.name, product.description, ...product.tags]
+      const haystack = [
+        product.name,
+        product.description,
+        ...product.tags,
+        ...product.colors.map((color) => color.name),
+      ]
         .join(" ")
         .toLowerCase();
       const terms = query.split(/\s+/);

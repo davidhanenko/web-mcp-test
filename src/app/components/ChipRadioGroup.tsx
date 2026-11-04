@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CheckIcon } from "@/app/components/icons";
+import { ColorSwatch } from "@/app/components/ColorSwatch";
 
 export type ChipOption<T extends string> = {
   value: T;
@@ -7,6 +8,8 @@ export type ChipOption<T extends string> = {
   disabled?: boolean;
   /** Extra text for screen readers, e.g. "(sold out)". */
   srSuffix?: string;
+  /** CSS color for a swatch dot shown before the label. */
+  swatch?: string;
 };
 
 type Props<T extends string> = {
@@ -65,6 +68,7 @@ export function ChipRadioGroup<T extends string>({
                 className="sr-only"
               />
               {showCheck && selected ? <CheckIcon width={14} height={14} /> : null}
+              {option.swatch ? <ColorSwatch hex={option.swatch} size={16} /> : null}
               {option.label}
               {option.srSuffix ? <span className="sr-only"> {option.srSuffix}</span> : null}
             </label>

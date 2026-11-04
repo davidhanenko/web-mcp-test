@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AddToCartForm } from "./components/AddToCartForm";
+import { ProductView } from "./components/ProductView";
 import { Badge } from "@/app/components/Badge";
 import { getAllProducts, getProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
@@ -44,36 +44,24 @@ export default async function ProductPage({
         </ol>
       </nav>
 
-      <article className="grid gap-10 md:grid-cols-2 lg:gap-16">
-        <div className="aspect-square w-full overflow-hidden rounded-lg">
-          <img
-            src={product.image}
-            alt={product.name}
-            width={600}
-            height={600}
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <div className="max-w-xl">
-          <ul className="flex flex-wrap gap-2" aria-label="Features">
-            {product.tags.map((tag, index) => (
-              <li key={tag}>
-                <Badge tone={index === 0 ? "dark" : "light"}>{tag}</Badge>
-              </li>
-            ))}
-          </ul>
-          <h1 className="font-display mt-4 text-4xl sm:text-5xl lg:text-[3.5rem]">
-            {product.name}
-          </h1>
-          <p className="mt-5 text-3xl font-extrabold">
-            {formatPrice(product.price)}
-          </p>
-          <p className="mt-5 text-lg leading-8 text-slate-700">
-            {product.description}
-          </p>
-          <AddToCartForm product={product} />
-        </div>
-      </article>
+      <ProductView product={product}>
+        <ul className="flex flex-wrap gap-2" aria-label="Features">
+          {product.tags.map((tag, index) => (
+            <li key={tag}>
+              <Badge tone={index === 0 ? "dark" : "light"}>{tag}</Badge>
+            </li>
+          ))}
+        </ul>
+        <h1 className="font-display mt-4 text-4xl sm:text-5xl lg:text-[3.5rem]">
+          {product.name}
+        </h1>
+        <p className="mt-5 text-3xl font-extrabold">
+          {formatPrice(product.price)}
+        </p>
+        <p className="mt-5 text-lg leading-8 text-slate-700">
+          {product.description}
+        </p>
+      </ProductView>
     </div>
   );
 }

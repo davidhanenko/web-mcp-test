@@ -1,4 +1,4 @@
-import { getProduct } from "@/lib/catalog";
+import { getColor, getProduct, getStock } from "@/lib/catalog";
 import type { CartDetails, CartItem, Size } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 
@@ -25,12 +25,13 @@ export function assertProductExists(productId: string): void {
 }
 
 /**
- * Throws unless the shopper can have `quantity` units of the product in `size`:
- * the product exists, comes in that size, and has that many in stock.
+ * Throws unless the shopper can have `quantity` units of the product in `size`
+ * and `color`: the product exists, comes in that size and color, and has that many in stock.
  */
 export function assertAvailable(
   productId: string,
   size: string,
+  color: string,
   quantity: number,
 ): asserts size is Size {
   const product = getProduct(productId);
@@ -42,13 +43,22 @@ export function assertAvailable(
     throw new Error(`Invalid size ${size} for ${product.name}.`);
   }
 
-  const inStock = product.stock[size] ?? 0;
+  const productColor = getColor(product, color);
+  if (!productColor) {
+    throw new Error(`Invalid color ${color} for ${product.name}.`);
+  }
+
+  const inStock = getStock(product, color, size);
   if (inStock <= 0) {
-    throw new Error(`${product.name} in size ${size} is out of stock.`);
+    throw new Error(
+      `${product.name} in ${productColor.name}, size ${size} is out of stock.`,
+    );
   }
 
   if (quantity > inStock) {
-    throw new Error(`Only ${inStock} left in size ${size} for ${product.name}.`);
+    throw new Error(
+      `Only ${inStock} left in ${productColor.name}, size ${size} for ${product.name}.`,
+    );
   }
 }
 
@@ -56,9 +66,13 @@ export function findCartItem(
   items: CartItem[],
   productId: string,
   size: string,
+  color: string,
 ): CartItem | undefined {
   return items.find(
-    (item) => item.productId === productId && item.size === size,
+    (item) =>
+      item.productId === productId &&
+      item.size === size &&
+      item.color === color,
   );
 }
 
@@ -76,11 +90,14 @@ export function getTotalQuantity(
 export function getCartDetails(items: CartItem[]): CartDetails {
   const detailedItems = items.map((item) => {
     const product = getProduct(item.productId);
+    const productColor = product && getColor(product, item.color);
     const unitPrice = product?.price ?? 0;
     return {
       ...item,
       name: product?.name ?? item.productId,
       image: product?.image ?? "",
+      colorName: productColor?.name ?? item.color,
+      colorHex: productColor?.hex ?? "#9AA0A6",
       unitPrice,
       subtotal: unitPrice * item.quantity,
     };

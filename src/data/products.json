@@ -5,9 +5,13 @@
     "category": "jackets",
     "price": 128,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 4, "S": 6, "M": 8, "L": 5, "XL": 3 },
     "tags": ["waterproof", "packable", "hiking"],
     "description": "A light waterproof shell for wet ridgelines. Sealed seams keep trail spray out without much bulk.",
+    "colors": [
+      { "id": "blue", "name": "Blue", "hex": "#3B6FA8", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/mist-trail-jacket.svg"
   },
   {
@@ -16,9 +20,13 @@
     "category": "jackets",
     "price": 142,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 2, "S": 5, "M": 7, "L": 4, "XL": 2 },
     "tags": ["waterproof", "breathable", "hiking"],
     "description": "A waterproof hiking shell with a quiet face fabric. Cut long enough to cover a hipbelt.",
+    "colors": [
+      { "id": "forest", "name": "Forest", "hex": "#2F5D43", "stock": {"XS": 1, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} },
+      { "id": "rust", "name": "Rust", "hex": "#A8532B", "stock": {"XS": 0, "S": 1, "M": 2, "L": 1, "XL": 0} }
+    ],
     "image": "/products/cedar-rain-shell.svg"
   },
   {
@@ -27,9 +35,13 @@
     "category": "jackets",
     "price": 98,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 5, "S": 8, "M": 9, "L": 6, "XL": 4 },
     "tags": ["waterproof", "packable", "travel"],
     "description": "A stowable waterproof layer for sudden showers. Stuff-sack pocket clips to a pack strap.",
+    "colors": [
+      { "id": "red", "name": "Red", "hex": "#B3392F", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 2} },
+      { "id": "slate", "name": "Slate", "hex": "#5B6770", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/brook-packable-shell.svg"
   },
   {
@@ -38,9 +50,12 @@
     "category": "jackets",
     "price": 219,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 1, "S": 3, "M": 4, "L": 3, "XL": 2 },
     "tags": ["waterproof", "insulated", "winter"],
     "description": "A waterproof insulated parka for alpine camps. Storm flap and hood brim handle driven snow.",
+    "colors": [
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 2, "M": 2, "L": 2, "XL": 1} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 0, "S": 1, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/summit-storm-parka.svg"
   },
   {
@@ -49,9 +64,13 @@
     "category": "jackets",
     "price": 89,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 6, "S": 7, "M": 10, "L": 6, "XL": 4 },
     "tags": ["fleece", "camp", "layering"],
     "description": "A midweight fleece for cool evenings at camp. Full zip so it ventilates on the climb.",
+    "colors": [
+      { "id": "forest", "name": "Forest", "hex": "#2F5D43", "stock": {"XS": 2, "S": 3, "M": 4, "L": 2, "XL": 2} },
+      { "id": "sand", "name": "Sand", "hex": "#D2B48C", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/pine-fleece-jacket.svg"
   },
   {
@@ -60,9 +79,13 @@
     "category": "jackets",
     "price": 175,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 2, "S": 4, "M": 5, "L": 3, "XL": 2 },
     "tags": ["insulated", "synthetic", "winter"],
     "description": "Synthetic insulation that stays lofted when damp. A reliable belay and trailhead layer.",
+    "colors": [
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 1, "S": 1, "M": 2, "L": 1, "XL": 1} },
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"XS": 0, "S": 1, "M": 1, "L": 1, "XL": 0} }
+    ],
     "image": "/products/granite-insulated-jacket.svg"
   },
   {
@@ -71,9 +94,12 @@
     "category": "jackets",
     "price": 110,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 3, "S": 4, "M": 0, "L": 2, "XL": 1 },
     "tags": ["windproof", "ultralight"],
     "description": "An ultralight wind shirt for exposed ridges. Medium is currently sold out.",
+    "colors": [
+      { "id": "teal", "name": "Teal", "hex": "#2E6F73", "stock": {"XS": 2, "S": 2, "M": 0, "L": 1, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 2, "M": 0, "L": 1, "XL": 0} }
+    ],
     "image": "/products/dusk-wind-shell.svg"
   },
   {
@@ -82,9 +108,13 @@
     "category": "jackets",
     "price": 199,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 2, "S": 3, "M": 4, "L": 3, "XL": 2 },
     "tags": ["down", "insulated", "camp"],
     "description": "800-fill down in a tight baffle pattern. Packs small for cold nights above treeline.",
+    "colors": [
+      { "id": "rust", "name": "Rust", "hex": "#A8532B", "stock": {"XS": 1, "S": 1, "M": 2, "L": 1, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 1, "M": 1, "L": 1, "XL": 1} },
+      { "id": "cream", "name": "Cream", "hex": "#EDE4D0", "stock": {"XS": 0, "S": 1, "M": 1, "L": 1, "XL": 0} }
+    ],
     "image": "/products/ember-down-jacket.svg"
   },
   {
@@ -93,9 +123,13 @@
     "category": "jackets",
     "price": 135,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 3, "S": 5, "M": 6, "L": 4, "XL": 3 },
     "tags": ["softshell", "stretch", "climbing"],
-    "description": "A stretch softshell for cool, dry days. Elbow articulation stays put on a high step.",
+    "description": "A stretch softshell for cool,  dry days. Elbow articulation stays put on a high step.",
+    "colors": [
+      { "id": "slate", "name": "Slate", "hex": "#5B6770", "stock": {"XS": 1, "S": 2, "M": 2, "L": 2, "XL": 1} },
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 1, "S": 1, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/quarry-softshell.svg"
   },
   {
@@ -104,9 +138,13 @@
     "category": "jackets",
     "price": 79,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 8, "S": 9, "M": 11, "L": 7, "XL": 5 },
     "tags": ["layering", "grid-fleece"],
     "description": "A grid-fleece liner that wicks under a shell. Quarter zip dumps heat on the uphill.",
+    "colors": [
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 3, "S": 3, "M": 4, "L": 3, "XL": 2} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 3, "S": 3, "M": 4, "L": 2, "XL": 2} },
+      { "id": "burgundy", "name": "Burgundy", "hex": "#6E2A35", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/frost-liner-jacket.svg"
   },
   {
@@ -115,9 +153,13 @@
     "category": "jackets",
     "price": 155,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 2, "S": 3, "M": 4, "L": 3, "XL": 2 },
     "tags": ["anorak", "weatherproof"],
     "description": "A pullover anorak with a deep kangaroo pocket. Weatherproof face for windy lakeshores.",
+    "colors": [
+      { "id": "sand", "name": "Sand", "hex": "#D2B48C", "stock": {"XS": 1, "S": 1, "M": 2, "L": 1, "XL": 1} },
+      { "id": "slate", "name": "Slate", "hex": "#5B6770", "stock": {"XS": 1, "S": 1, "M": 1, "L": 1, "XL": 1} },
+      { "id": "forest", "name": "Forest", "hex": "#2F5D43", "stock": {"XS": 0, "S": 1, "M": 1, "L": 1, "XL": 0} }
+    ],
     "image": "/products/fog-anorak-jacket.svg"
   },
   {
@@ -126,9 +168,12 @@
     "category": "boots",
     "price": 168,
     "sizes": ["S", "M", "L", "XL"],
-    "stock": { "S": 4, "M": 6, "L": 5, "XL": 3 },
     "tags": ["hiking", "leather", "support"],
     "description": "Leather hikers with a firm shank for rocky miles. A weekend boot that can take a full pack.",
+    "colors": [
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"S": 2, "M": 3, "L": 3, "XL": 2} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/ridge-hiker-boots.svg"
   },
   {
@@ -137,9 +182,13 @@
     "category": "boots",
     "price": 124,
     "sizes": ["S", "M", "L", "XL"],
-    "stock": { "S": 5, "M": 7, "L": 4, "XL": 2 },
     "tags": ["hiking", "waterproof", "light"],
     "description": "Waterproof trail boots with a flexible midsole. Fast on mixed dirt and wet boardwalks.",
+    "colors": [
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"S": 2, "M": 2, "L": 1, "XL": 1} },
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"S": 1, "M": 2, "L": 1, "XL": 0} }
+    ],
     "image": "/products/river-trail-boots.svg"
   },
   {
@@ -148,9 +197,12 @@
     "category": "boots",
     "price": 210,
     "sizes": ["S", "M", "L", "XL"],
-    "stock": { "S": 2, "M": 3, "L": 3, "XL": 1 },
     "tags": ["winter", "insulated", "waterproof"],
     "description": "Insulated waterproof boots for frozen approaches. High cuff keeps spindrift off your socks.",
+    "colors": [
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"S": 1, "M": 2, "L": 2, "XL": 1} },
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"S": 1, "M": 1, "L": 1, "XL": 0} }
+    ],
     "image": "/products/alpine-winter-boots.svg"
   },
   {
@@ -159,9 +211,13 @@
     "category": "boots",
     "price": 98,
     "sizes": ["S", "M", "L", "XL"],
-    "stock": { "S": 6, "M": 8, "L": 5, "XL": 3 },
     "tags": ["camp", "casual"],
-    "description": "Suede chukkas for town days between trips. Cushioned footbed, no trail hardware.",
+    "description": "Suede chukkas for town days between trips. Cushioned footbed,  no trail hardware.",
+    "colors": [
+      { "id": "sand", "name": "Sand", "hex": "#D2B48C", "stock": {"S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"S": 2, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/camp-chukka-boots.svg"
   },
   {
@@ -170,9 +226,12 @@
     "category": "boots",
     "price": 145,
     "sizes": ["S", "M", "L", "XL"],
-    "stock": { "S": 3, "M": 5, "L": 4, "XL": 2 },
     "tags": ["camp", "waterproof"],
     "description": "Waterproof camp boots with a warm lining. Easy on after a wet day in the trees.",
+    "colors": [
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"S": 1, "M": 2, "L": 2, "XL": 1} }
+    ],
     "image": "/products/north-camp-boots.svg"
   },
   {
@@ -181,9 +240,13 @@
     "category": "socks",
     "price": 18,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 12, "S": 14, "M": 16, "L": 12, "XL": 8 },
     "tags": ["wool", "merino", "hiking"],
-    "description": "Merino crew socks that resist odor on multi-day trips. Cushioned sole, smooth toe seam.",
+    "description": "Merino crew socks that resist odor on multi-day trips. Cushioned sole,  smooth toe seam.",
+    "colors": [
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 4, "S": 5, "M": 6, "L": 4, "XL": 3} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 4, "S": 5, "M": 5, "L": 4, "XL": 3} },
+      { "id": "forest", "name": "Forest", "hex": "#2F5D43", "stock": {"XS": 4, "S": 4, "M": 5, "L": 4, "XL": 2} }
+    ],
     "image": "/products/merino-crew-socks.svg"
   },
   {
@@ -192,9 +255,13 @@
     "category": "socks",
     "price": 14,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 10, "S": 12, "M": 15, "L": 10, "XL": 7 },
     "tags": ["hiking", "light"],
     "description": "Low ankle socks for warm trail days. Light cushion under the ball of the foot.",
+    "colors": [
+      { "id": "white", "name": "White", "hex": "#F4F4F1", "stock": {"XS": 4, "S": 4, "M": 5, "L": 4, "XL": 3} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 3, "S": 4, "M": 5, "L": 3, "XL": 2} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 3, "S": 4, "M": 5, "L": 3, "XL": 2} }
+    ],
     "image": "/products/trail-ankle-socks.svg"
   },
   {
@@ -203,9 +270,13 @@
     "category": "socks",
     "price": 24,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 8, "S": 10, "M": 12, "L": 9, "XL": 6 },
     "tags": ["wool", "winter", "hiking"],
     "description": "Heavy wool socks for cold camps. Dense knit around the shin stays up in a winter boot.",
+    "colors": [
+      { "id": "red", "name": "Red", "hex": "#B3392F", "stock": {"XS": 3, "S": 4, "M": 4, "L": 3, "XL": 2} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 3, "S": 3, "M": 4, "L": 3, "XL": 2} },
+      { "id": "cream", "name": "Cream", "hex": "#EDE4D0", "stock": {"XS": 2, "S": 3, "M": 4, "L": 3, "XL": 2} }
+    ],
     "image": "/products/alpine-wool-socks.svg"
   },
   {
@@ -214,9 +285,13 @@
     "category": "socks",
     "price": 16,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 9, "S": 11, "M": 13, "L": 10, "XL": 6 },
     "tags": ["hiking", "cushion"],
     "description": "Extra cushion under heel and forefoot. A workhorse sock for long dirt miles.",
+    "colors": [
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"XS": 3, "S": 4, "M": 5, "L": 4, "XL": 2} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 3, "S": 4, "M": 4, "L": 3, "XL": 2} },
+      { "id": "mustard", "name": "Mustard", "hex": "#C8962E", "stock": {"XS": 3, "S": 3, "M": 4, "L": 3, "XL": 2} }
+    ],
     "image": "/products/cushion-hike-socks.svg"
   },
   {
@@ -225,9 +300,12 @@
     "category": "socks",
     "price": 12,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 14, "S": 16, "M": 18, "L": 12, "XL": 8 },
     "tags": ["liner", "layering"],
     "description": "Thin liners that sit under a wool sock. Helps cut blisters on hot descents.",
+    "colors": [
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 7, "S": 8, "M": 9, "L": 6, "XL": 4} },
+      { "id": "white", "name": "White", "hex": "#F4F4F1", "stock": {"XS": 7, "S": 8, "M": 9, "L": 6, "XL": 4} }
+    ],
     "image": "/products/lightweight-liner-socks.svg"
   },
   {
@@ -236,9 +314,13 @@
     "category": "socks",
     "price": 22,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 6, "S": 8, "M": 9, "L": 7, "XL": 4 },
     "tags": ["compression", "recovery"],
-    "description": "Graduated compression for the drive home. Firm knit, not a hiking cushion sock.",
+    "description": "Graduated compression for the drive home. Firm knit,  not a hiking cushion sock.",
+    "colors": [
+      { "id": "blue", "name": "Blue", "hex": "#3B6FA8", "stock": {"XS": 2, "S": 3, "M": 3, "L": 3, "XL": 2} },
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} },
+      { "id": "red", "name": "Red", "hex": "#B3392F", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/peak-compression-socks.svg"
   },
   {
@@ -247,9 +329,13 @@
     "category": "socks",
     "price": 28,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 5, "S": 7, "M": 8, "L": 6, "XL": 3 },
     "tags": ["wool", "winter", "ski"],
     "description": "Over-the-calf wool ski socks with a shin pad. Warm in a stiff boot without bulk.",
+    "colors": [
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} },
+      { "id": "burgundy", "name": "Burgundy", "hex": "#6E2A35", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 1, "S": 2, "M": 2, "L": 2, "XL": 1} }
+    ],
     "image": "/products/summit-ski-socks.svg"
   },
   {
@@ -258,9 +344,13 @@
     "category": "shirts",
     "price": 68,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 4, "S": 6, "M": 8, "L": 5, "XL": 3 },
     "tags": ["flannel", "camp", "cotton"],
     "description": "A brushed flannel for cool mornings. Chest pockets big enough for a map folded small.",
+    "colors": [
+      { "id": "red", "name": "Red", "hex": "#B3392F", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "forest", "name": "Forest", "hex": "#2F5D43", "stock": {"XS": 1, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/cedar-flannel-shirt.svg"
   },
   {
@@ -269,9 +359,13 @@
     "category": "shirts",
     "price": 42,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 7, "S": 9, "M": 11, "L": 8, "XL": 5 },
     "tags": ["sun", "hiking", "upf"],
     "description": "A long-sleeve sun shirt with UPF fabric. Vents at the side seam dump heat on climbs.",
+    "colors": [
+      { "id": "sand", "name": "Sand", "hex": "#D2B48C", "stock": {"XS": 3, "S": 3, "M": 4, "L": 3, "XL": 2} },
+      { "id": "blue", "name": "Blue", "hex": "#3B6FA8", "stock": {"XS": 2, "S": 3, "M": 4, "L": 3, "XL": 2} },
+      { "id": "white", "name": "White", "hex": "#F4F4F1", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/sun-trail-shirt.svg"
   },
   {
@@ -280,9 +374,13 @@
     "category": "shirts",
     "price": 58,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 5, "S": 7, "M": 9, "L": 6, "XL": 4 },
     "tags": ["wool", "merino", "layering"],
     "description": "A merino short-sleeve base layer. Stays comfortable after a long day in a pack harness.",
+    "colors": [
+      { "id": "black", "name": "Black", "hex": "#1F2326", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 2} },
+      { "id": "grey", "name": "Grey", "hex": "#9AA0A6", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 1, "S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/merino-base-shirt.svg"
   },
   {
@@ -291,9 +389,13 @@
     "category": "shirts",
     "price": 48,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 6, "S": 8, "M": 10, "L": 7, "XL": 4 },
     "tags": ["camp", "casual"],
     "description": "A three-button henley for camp and travel days. Midweight knit that layers under a fleece.",
+    "colors": [
+      { "id": "olive", "name": "Olive", "hex": "#5E6B3A", "stock": {"XS": 2, "S": 3, "M": 4, "L": 3, "XL": 2} },
+      { "id": "cream", "name": "Cream", "hex": "#EDE4D0", "stock": {"XS": 2, "S": 3, "M": 3, "L": 2, "XL": 1} },
+      { "id": "burgundy", "name": "Burgundy", "hex": "#6E2A35", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} }
+    ],
     "image": "/products/camp-henley-shirt.svg"
   },
   {
@@ -302,9 +404,13 @@
     "category": "shirts",
     "price": 72,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 3, "S": 5, "M": 6, "L": 4, "XL": 2 },
     "tags": ["canvas", "durable"],
     "description": "A tough canvas shirt for chopping wood and loading the car. Double-needle seams throughout.",
+    "colors": [
+      { "id": "brown", "name": "Brown", "hex": "#6B4A2F", "stock": {"XS": 1, "S": 2, "M": 2, "L": 2, "XL": 1} },
+      { "id": "slate", "name": "Slate", "hex": "#5B6770", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} },
+      { "id": "mustard", "name": "Mustard", "hex": "#C8962E", "stock": {"XS": 1, "S": 1, "M": 2, "L": 1, "XL": 0} }
+    ],
     "image": "/products/granite-work-shirt.svg"
   },
   {
@@ -313,9 +419,13 @@
     "category": "shirts",
     "price": 32,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 10, "S": 12, "M": 14, "L": 10, "XL": 7 },
     "tags": ["cotton", "casual"],
     "description": "A heavy cotton tee with a quiet Northline mark. Everyday shirt that still feels like camp.",
+    "colors": [
+      { "id": "white", "name": "White", "hex": "#F4F4F1", "stock": {"XS": 4, "S": 4, "M": 5, "L": 4, "XL": 3} },
+      { "id": "blue", "name": "Blue", "hex": "#3B6FA8", "stock": {"XS": 3, "S": 4, "M": 5, "L": 3, "XL": 2} },
+      { "id": "rust", "name": "Rust", "hex": "#A8532B", "stock": {"XS": 3, "S": 4, "M": 4, "L": 3, "XL": 2} }
+    ],
     "image": "/products/river-tee-shirt.svg"
   },
   {
@@ -324,9 +434,13 @@
     "category": "shirts",
     "price": 54,
     "sizes": ["XS", "S", "M", "L", "XL"],
-    "stock": { "XS": 4, "S": 6, "M": 7, "L": 5, "XL": 3 },
     "tags": ["travel", "casual"],
     "description": "A knit polo that packs flat for travel. Breathable enough for a warm trailhead afternoon.",
+    "colors": [
+      { "id": "navy", "name": "Navy", "hex": "#1F3A5F", "stock": {"XS": 2, "S": 2, "M": 3, "L": 2, "XL": 1} },
+      { "id": "cream", "name": "Cream", "hex": "#EDE4D0", "stock": {"XS": 1, "S": 2, "M": 2, "L": 2, "XL": 1} },
+      { "id": "teal", "name": "Teal", "hex": "#2E6F73", "stock": {"XS": 1, "S": 2, "M": 2, "L": 1, "XL": 1} }
+    ],
     "image": "/products/dusk-polo-shirt.svg"
   }
 ]
