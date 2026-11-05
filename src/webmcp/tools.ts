@@ -8,6 +8,9 @@ import {
   type Size,
 } from "@/lib/types";
 import { useCart } from "@/stores/cart";
+import { useCartDrawer } from "@/stores/cart-drawer";
+import { useCatalogFilters } from "@/stores/catalog-filters";
+import { useOrder } from "@/stores/order";
 import { withInjection } from "@/webmcp/test-flags";
 
 // Keeps the result under Chrome's 1.5K-character limit per tool result.
@@ -36,8 +39,10 @@ const cartItemProperties = {
 
 export function createTools({
   openCheckout,
+  showCatalog,
 }: {
   openCheckout: () => void;
+  showCatalog: () => void;
 }): ModelContextTool[] {
   return [
     {
@@ -77,6 +82,9 @@ export function createTools({
             error: `Unknown size: ${size}. Use one of: ${SIZES.join(", ")}.`,
           };
         }
+
+        useCatalogFilters.getState().applyFromSearch({ query, category, maxPrice, size });
+        showCatalog();
 
         const matches = searchProducts({
           query: query || undefined,
@@ -176,6 +184,7 @@ export function createTools({
           // What's in stock, so the agent can retry.
           return { error: message, inStock: getSizesInStockByColor(product) };
         }
+        useCartDrawer.getState().open();
         return getCartForAgent();
       },
     },
@@ -207,10 +216,24 @@ export function createTools({
       description:
         "Open the checkout review page, which shows the cart and total. It does not place the order; the customer places it.",
       inputSchema: { type: "object", properties: {} },
-      annotations: { consequentialHint: true },
       execute() {
         openCheckout();
         return "Checkout review is open. The customer places the order.";
+      },
+    },
+
+    {
+      name: "place_order",
+      description:
+        "Place the order for the current cart. This charges the customer. Use only after they confirm they want to buy.",
+      inputSchema: { type: "object", properties: {} },
+      annotations: { consequentialHint: true },
+      execute() {
+        useCartDrawer.getState().close();
+        openCheckout();
+        const result = useOrder.getState().placeOrder();
+        if (result && "error" in result) return result;
+        return "Order placed.";
       },
     },
   ];

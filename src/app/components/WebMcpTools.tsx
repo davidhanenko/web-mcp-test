@@ -24,6 +24,10 @@ export function WebMcpTools() {
     if (!modelContext || !isSavedCartLoaded) return;
     if (toolsMode === null || toolsMode === "off") return;
 
+    const showCatalog = () => {
+      useCartDrawer.getState().close();
+      router.push("/");
+    };
     const openCheckout = () => {
       useCartDrawer.getState().close();
       router.push("/checkout");
@@ -31,7 +35,7 @@ export function WebMcpTools() {
     const tools =
       toolsMode === "basic"
         ? createBasicTools({ openCheckout })
-        : createTools({ openCheckout });
+        : createTools({ openCheckout, showCatalog });
 
     // One signal for all tools: aborting it unregisters every one of them.
     const controller = new AbortController();

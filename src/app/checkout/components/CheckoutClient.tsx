@@ -2,22 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { SuccessMark } from "@/app/components/SuccessMark";
 import { useIsSavedCartLoaded } from "@/hooks/useIsSavedCartLoaded";
 import { useCartDetails } from "@/hooks/useCartDetails";
 import { formatPrice } from "@/lib/format";
-import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
-import { saveLastOrder } from "@/webmcp/test-flags";
+import { useOrder } from "@/stores/order";
 
 export function CheckoutClient() {
   const { items, total, totalQuantity } = useCartDetails();
-  const clearCart = useCart((s) => s.clearCart);
   const openCart = useCartDrawer((s) => s.open);
+  const placed = useOrder((s) => s.placed);
   const isSavedCartLoaded = useIsSavedCartLoaded();
-  const [placed, setPlaced] = useState(false);
 
   if (placed) {
     return (
@@ -109,11 +107,7 @@ export function CheckoutClient() {
           <button
             type="button"
             className="mt-6 h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover"
-            onClick={() => {
-              saveLastOrder(useCart.getState().items);
-              clearCart();
-              setPlaced(true);
-            }}
+            onClick={() => useOrder.getState().placeOrder()}
           >
             Place order
           </button>
@@ -153,6 +147,7 @@ function CenteredMessage({
       <p className="mt-6 text-lg leading-8 text-slate-700">{body}</p>
       <Link
         href="/"
+        onClick={() => useOrder.getState().reset()}
         className="mt-8 inline-flex h-14 items-center rounded-md bg-accent px-11 text-lg font-bold text-ink hover:bg-accent-hover"
       >
         Back to shop

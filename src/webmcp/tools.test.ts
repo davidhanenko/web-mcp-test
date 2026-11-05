@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getAllProducts } from "@/lib/catalog";
 import { useCart } from "@/stores/cart";
+import { useCartDrawer } from "@/stores/cart-drawer";
+import { useCatalogFilters } from "@/stores/catalog-filters";
+import { useOrder } from "@/stores/order";
 import {
   INJECTED_PRODUCT_ID,
   INJECTED_TEXT,
@@ -17,7 +20,8 @@ type SearchResult = {
 };
 
 const openCheckout = vi.fn();
-const tools = createTools({ openCheckout });
+const showCatalog = vi.fn();
+const tools = createTools({ openCheckout, showCatalog });
 const client = { signal: new AbortController().signal };
 
 /** Calls a tool the way the browser does. */
@@ -30,11 +34,15 @@ async function run(name: string, input: ModelContextToolInput = {}) {
 beforeEach(() => {
   localStorage.clear();
   useCart.setState({ items: [] });
+  useCartDrawer.setState({ isOpen: false });
+  useCatalogFilters.getState().clearAll();
+  useOrder.getState().reset();
   openCheckout.mockClear();
+  showCatalog.mockClear();
 });
 
 describe("tool definitions", () => {
-  it("has the six imperative tools within Chrome's size limits", () => {
+  it("has the seven imperative tools within Chrome's size limits", () => {
     expect(tools.map((tool) => tool.name)).toEqual([
       "search_products",
       "get_product",
@@ -42,6 +50,7 @@ describe("tool definitions", () => {
       "add_to_cart",
       "remove_from_cart",
       "open_checkout",
+      "place_order",
     ]);
     for (const tool of tools) {
       expect(tool.name.length).toBeLessThanOrEqual(30);
@@ -68,6 +77,13 @@ describe("search_products", () => {
     })) as SearchResult;
     expect(result.products.length).toBeGreaterThan(0);
     expect(result.products.every((product) => product.price <= 150)).toBe(true);
+    expect(showCatalog).toHaveBeenCalledOnce();
+    expect(useCatalogFilters.getState()).toMatchObject({
+      query: "waterproof",
+      category: "jackets",
+      maxPrice: 150,
+      size: "M",
+    });
   });
 
   it("returns at most 10 products and the real number of matches, within Chrome's limit", async () => {
@@ -106,6 +122,13 @@ describe("search_products", () => {
     });
     expect(await run("search_products", { size: "XXL" })).toEqual({
       error: "Unknown size: XXL. Use one of: XS, S, M, L, XL.",
+    });
+    expect(showCatalog).not.toHaveBeenCalled();
+    expect(useCatalogFilters.getState()).toMatchObject({
+      query: "",
+      category: "",
+      maxPrice: 200,
+      size: "",
     });
   });
 
@@ -186,6 +209,7 @@ describe("add_to_cart", () => {
     });
     // The UI and the tools share one store.
     expect(useCart.getState().items).toHaveLength(1);
+    expect(useCartDrawer.getState().isOpen).toBe(true);
   });
 
   it("treats a null quantity as 1", async () => {
@@ -206,6 +230,7 @@ describe("add_to_cart", () => {
       inStock: { teal: ["XS", "S", "L", "XL"], black: ["XS", "S", "L"] },
     });
     expect(useCart.getState().items).toEqual([]);
+    expect(useCartDrawer.getState().isOpen).toBe(false);
   });
 
   it("lists every color, even one with nothing in stock, when the color is unknown", async () => {
@@ -276,5 +301,20 @@ describe("open_checkout", () => {
     await run("open_checkout");
     expect(openCheckout).toHaveBeenCalledOnce();
     expect(useCart.getState().items).toHaveLength(1);
+  });
+});
+
+describe("place_order", () => {
+  it("places the order, empties the cart, and opens checkout", async () => {
+    useCart.getState().addToCart("mist-trail-jacket", "M", "blue", 1);
+    expect(await run("place_order")).toBe("Order placed.");
+    expect(useCart.getState().items).toEqual([]);
+    expect(useOrder.getState().placed).toBe(true);
+    expect(openCheckout).toHaveBeenCalledOnce();
+  });
+
+  it("returns an error when the cart is empty and does not place the order", async () => {
+    expect(await run("place_order")).toEqual({ error: "Cart is empty." });
+    expect(useOrder.getState().placed).toBe(false);
   });
 });

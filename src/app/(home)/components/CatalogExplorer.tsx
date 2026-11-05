@@ -1,14 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { ChipRadioGroup, type ChipOption } from "@/app/components/ChipRadioGroup";
 import { SearchIcon } from "@/app/components/icons";
 import { ProductCard } from "./ProductCard";
 import { searchProducts } from "@/lib/catalog";
 import { CATEGORIES, SIZES, type Category, type Size } from "@/lib/types";
-
-const PRICE_MIN = 10;
-const PRICE_MAX = 200; 
+import { PRICE_MAX, PRICE_MIN, useCatalogFilters } from "@/stores/catalog-filters";
 
 const CATEGORY_OPTIONS: ChipOption<Category | "">[] = [
   { value: "", label: "All" },
@@ -28,11 +26,21 @@ export function CatalogExplorer({
 }: {
   initialCategory?: Category | "";
 }) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<Category | "">(initialCategory);
-  const [maxPrice, setMaxPrice] = useState(PRICE_MAX);
-  const [size, setSize] = useState<Size | "">("");
-  const [inStockOnly, setInStockOnly] = useState(false);
+  const query = useCatalogFilters((s) => s.query);
+  const category = useCatalogFilters((s) => s.category);
+  const maxPrice = useCatalogFilters((s) => s.maxPrice);
+  const size = useCatalogFilters((s) => s.size);
+  const inStockOnly = useCatalogFilters((s) => s.inStockOnly);
+  const setQuery = useCatalogFilters((s) => s.setQuery);
+  const setCategory = useCatalogFilters((s) => s.setCategory);
+  const setMaxPrice = useCatalogFilters((s) => s.setMaxPrice);
+  const setSize = useCatalogFilters((s) => s.setSize);
+  const setInStockOnly = useCatalogFilters((s) => s.setInStockOnly);
+  const clearAll = useCatalogFilters((s) => s.clearAll);
+
+  useEffect(() => {
+    if (initialCategory) setCategory(initialCategory);
+  }, [initialCategory, setCategory]);
 
   const anyPrice = maxPrice >= PRICE_MAX;
   const priceText = anyPrice ? "Any price" : `$${maxPrice}`;
@@ -48,14 +56,6 @@ export function CatalogExplorer({
       }),
     [query, category, maxPrice, anyPrice, size, inStockOnly],
   );
-
-  function clearAll() {
-    setQuery("");
-    setCategory("");
-    setMaxPrice(PRICE_MAX);
-    setSize("");
-    setInStockOnly(false);
-  }
 
   return (
     <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-12">
