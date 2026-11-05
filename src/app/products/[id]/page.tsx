@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { HiddenInjection } from "./components/HiddenInjection";
 import { ProductView } from "./components/ProductView";
 import { Badge } from "@/app/components/Badge";
 import { getAllProducts, getProduct } from "@/lib/catalog";
@@ -60,6 +61,7 @@ export default async function ProductPage({
         </p>
         <p className="mt-5 text-lg leading-8 text-slate-700">
           {product.description}
+          <HiddenInjection productId={product.id} />
         </p>
       </ProductView>
     </div>

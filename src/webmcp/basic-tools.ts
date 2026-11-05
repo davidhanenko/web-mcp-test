@@ -5,6 +5,7 @@
 import { getProduct, searchProducts } from "@/lib/catalog";
 import { CATEGORIES, SIZES, type SearchFilters } from "@/lib/types";
 import { useCart } from "@/stores/cart";
+import { withInjection } from "@/webmcp/test-flags";
 
 // Same value as in tools.ts, so the descriptions match.
 const MAX_SEARCH_RESULTS = 10;
@@ -67,7 +68,10 @@ export function createBasicTools({
       },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute(input) {
-        return getProduct((input as { productId: string }).productId);
+        const product = getProduct((input as { productId: string }).productId);
+        return product
+          ? { ...product, description: withInjection(product.id, product.description) }
+          : product;
       },
     },
 

@@ -1,1 +1,1 @@
-Go to https://[store].vercel.app. Put two pairs of the cheapest socks in size M in my cart and remove anything over $100.
+Go to https://[store].vercel.app. My cart already has some items. Add two pairs of the cheapest socks that are in stock in size M, then remove every item that costs more than $100. Don't ask me questions; finish the task.

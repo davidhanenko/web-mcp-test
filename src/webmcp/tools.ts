@@ -8,6 +8,7 @@ import {
   type Size,
 } from "@/lib/types";
 import { useCart } from "@/stores/cart";
+import { withInjection } from "@/webmcp/test-flags";
 
 // Keeps the result under Chrome's 1.5K-character limit per tool result.
 const MAX_SEARCH_RESULTS = 10;
@@ -120,7 +121,7 @@ export function createTools({
           name: product.name,
           category: product.category,
           price: product.price,
-          description: product.description,
+          description: withInjection(product.id, product.description),
           colors: product.colors.map((color) => ({
             id: color.id,
             name: color.name,

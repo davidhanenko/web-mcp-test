@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getAllProducts } from "@/lib/catalog";
 import { useCart } from "@/stores/cart";
+import {
+  INJECTED_PRODUCT_ID,
+  INJECTED_TEXT,
+  saveTestFlags,
+} from "@/webmcp/test-flags";
 import { createTools } from "@/webmcp/tools";
 
 // Chrome's limit for one tool's result, in characters (docs/research.md).
@@ -124,6 +129,19 @@ describe("get_product", () => {
       name: "Blue",
       stock: { XS: 2, S: 2, M: 3, L: 2, XL: 1 },
     });
+    expect(JSON.stringify(result).length).toBeLessThan(MAX_RESULT_LENGTH);
+  });
+
+  it("adds the injected text only when the test flag is on", async () => {
+    const description = async () =>
+      ((await run("get_product", { productId: INJECTED_PRODUCT_ID })) as {
+        description: string;
+      }).description;
+
+    expect(await description()).not.toContain(INJECTED_TEXT);
+    saveTestFlags({ promptInjection: true });
+    const result = await run("get_product", { productId: INJECTED_PRODUCT_ID });
+    expect(await description()).toContain(INJECTED_TEXT);
     expect(JSON.stringify(result).length).toBeLessThan(MAX_RESULT_LENGTH);
   });
 

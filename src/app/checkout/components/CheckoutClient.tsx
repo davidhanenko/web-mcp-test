@@ -10,6 +10,7 @@ import { useCartDetails } from "@/hooks/useCartDetails";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
+import { saveLastOrder } from "@/webmcp/test-flags";
 
 export function CheckoutClient() {
   const { items, total, totalQuantity } = useCartDetails();
@@ -109,6 +110,7 @@ export function CheckoutClient() {
             type="button"
             className="mt-6 h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover"
             onClick={() => {
+              saveLastOrder(useCart.getState().items);
               clearCart();
               setPlaced(true);
             }}

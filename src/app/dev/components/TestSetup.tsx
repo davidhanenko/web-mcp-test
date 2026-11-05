@@ -8,6 +8,12 @@ import {
   useToolsMode,
   type ToolsMode,
 } from "@/webmcp/tools-mode";
+import {
+  clearLastOrder,
+  readTestFlags,
+  saveTestFlags,
+  usePromptInjection,
+} from "@/webmcp/test-flags";
 
 const buttonClass =
   "h-11 rounded-full border border-ink bg-white px-5 font-semibold text-ink hover:bg-ink hover:text-white";
@@ -18,8 +24,15 @@ function chooseToolsMode(mode: ToolsMode) {
   window.location.reload();
 }
 
+function choosePromptInjection(promptInjection: boolean) {
+  saveTestFlags({ ...readTestFlags(), promptInjection });
+  // Reloading re-registers the tools cleanly.
+  window.location.reload();
+}
+
 function emptyCart() {
   useCart.getState().clearCart();
+  clearLastOrder();
 }
 
 function loadTaskBCart() {
@@ -31,6 +44,7 @@ function loadTaskBCart() {
 
 export function TestSetup() {
   const toolsMode = useToolsMode();
+  const promptInjection = usePromptInjection();
 
   return (
     <div className="mt-8 flex flex-col gap-10">
@@ -47,6 +61,25 @@ export function TestSetup() {
         ) : (
           // Same height as the chips, so nothing shifts once the mode is read.
           <div className="h-[4.75rem]" />
+        )}
+      </section>
+
+      <section>
+        <h2 className="label-caps mb-3">Test flags</h2>
+        {promptInjection === null ? (
+          // Same height as the checkbox row, so nothing shifts once the flag is read.
+          <div className="h-6" />
+        ) : (
+          <label className="flex h-6 items-center gap-2.5 font-semibold">
+            <input
+              type="checkbox"
+              name="prompt-injection"
+              checked={promptInjection}
+              onChange={(event) => choosePromptInjection(event.target.checked)}
+              className="h-5 w-5 accent-ink"
+            />
+            Prompt injection
+          </label>
         )}
       </section>
 

@@ -24,7 +24,7 @@ export function ColorTag({
         backgroundColor: color.hex,
         color: readableTextColor(color.hex),
       }}
-      className='absolute top-4 right-4 inline-block rounded-sm w-12 h-12'
+      className='absolute bottom-4 right-4 inline-block rounded-sm w-12 h-12'
     ></span>
   );
 }
