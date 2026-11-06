@@ -15,8 +15,15 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://web-mcp-test-psi.vercel.app"),
   title: "Northline Supply",
   description: "Outdoor clothing for wet ridgelines and quiet camps.",
+  openGraph: {
+    title: "Northline Supply: a WebMCP test store",
+    description: "A demo store that offers WebMCP tools to AI agents in the browser.",
+    siteName: "Northline Supply",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
