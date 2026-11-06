@@ -6,7 +6,12 @@ import { SearchIcon } from "@/app/components/icons";
 import { ProductCard } from "./ProductCard";
 import { searchProducts } from "@/lib/catalog";
 import { CATEGORIES, SIZES, type Category, type Size } from "@/lib/types";
-import { PRICE_MAX, PRICE_MIN, useCatalogFilters } from "@/stores/catalog-filters";
+import {
+  PRICE_MAX,
+  PRICE_MIN,
+  PRICE_STEP,
+  useCatalogFilters,
+} from "@/stores/catalog-filters";
 
 const CATEGORY_OPTIONS: ChipOption<Category | "">[] = [
   { value: "", label: "All" },
@@ -104,7 +109,7 @@ export function CatalogExplorer({
               type="range"
               min={PRICE_MIN}
               max={PRICE_MAX}
-              step={10}
+              step={PRICE_STEP}
               value={maxPrice}
               onChange={(event) => setMaxPrice(Number(event.target.value))}
               aria-valuetext={priceText}

@@ -1,34 +1,41 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { CenteredMessage } from "@/app/checkout/components/CenteredMessage";
 import { ColorSwatch } from "@/app/components/ColorSwatch";
-import { SuccessMark } from "@/app/components/SuccessMark";
 import { useIsSavedCartLoaded } from "@/hooks/useIsSavedCartLoaded";
 import { useCartDetails } from "@/hooks/useCartDetails";
 import { formatPrice } from "@/lib/format";
+import { useAgentCartChanges } from "@/stores/agent-cart-changes";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { useOrder } from "@/stores/order";
 
 export function CheckoutClient() {
+  const router = useRouter();
   const { items, total, totalQuantity } = useCartDetails();
   const openCart = useCartDrawer((s) => s.open);
-  const placed = useOrder((s) => s.placed);
   const isSavedCartLoaded = useIsSavedCartLoaded();
+  const [isPlacing, setIsPlacing] = useState(false);
 
-  if (placed) {
-    return (
-      <CenteredMessage
-        mark
-        title="Order placed"
-        body="Thanks for shopping at Northline Supply. This is a demo store, so no payment was taken and nothing will ship."
-      />
-    );
+  // Changes the agent made before this page opened are already in what the customer sees.
+  // Only changes made while the customer is reviewing need a notice.
+  const agentChanges = useAgentCartChanges((s) => s.count);
+  const [agentChangesAtOpen] = useState(agentChanges);
+  const cartChangedByAgent = agentChanges > agentChangesAtOpen;
+
+  function placeOrder() {
+    const result = useOrder.getState().placeOrder();
+    if (result && "error" in result) return;
+    setIsPlacing(true);
+    // replace: Back shouldn't return to the checkout of an order that's already placed.
+    router.replace("/checkout/confirmation");
   }
 
-  if (!isSavedCartLoaded) {
-    // Reserve the page height until the saved cart is read, avoiding a flash of the empty state.
+  if (!isSavedCartLoaded || isPlacing) {
+    // Reserve the page height until the saved cart is read, or until the confirmation
+    // page opens after placing the order, avoiding a flash of the empty state.
     return (
       <div className="min-h-[480px]">
         <h1 className="font-display text-4xl sm:text-5xl">Checkout</h1>
@@ -104,54 +111,23 @@ export function CheckoutClient() {
               {formatPrice(total, { cents: true })}
             </span>
           </p>
+          {/* Always rendered, so screen readers announce the notice when it appears. */}
+          <div role="status">
+            {cartChangedByAgent ? (
+              <p className="mt-6 rounded-md border border-ink bg-white px-4 py-3 font-semibold">
+                Your cart was changed. Check it before placing the order.
+              </p>
+            ) : null}
+          </div>
           <button
             type="button"
             className="mt-6 h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover"
-            onClick={() => useOrder.getState().placeOrder()}
+            onClick={placeOrder}
           >
             Place order
           </button>
-          <p className="mt-5 text-muted">
-            Demo store. No payment is taken and nothing ships.
-          </p>
         </section>
       </div>
-    </div>
-  );
-}
-
-function CenteredMessage({
-  title,
-  body,
-  mark = false,
-}: {
-  title: string;
-  body: ReactNode;
-  mark?: boolean;
-}) {
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
-
-  return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center">
-      {mark ? <SuccessMark /> : null}
-      <h1
-        ref={headingRef}
-        tabIndex={-1}
-        className="font-display mt-8 text-4xl outline-none sm:text-5xl"
-      >
-        {title}
-      </h1>
-      <p className="mt-6 text-lg leading-8 text-slate-700">{body}</p>
-      <Link
-        href="/"
-        onClick={() => useOrder.getState().reset()}
-        className="mt-8 inline-flex h-14 items-center rounded-md bg-accent px-11 text-lg font-bold text-ink hover:bg-accent-hover"
-      >
-        Back to shop
-      </Link>
     </div>
   );
 }

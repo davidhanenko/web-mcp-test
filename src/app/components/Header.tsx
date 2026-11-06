@@ -10,7 +10,6 @@ import { useCartDrawer } from "@/stores/cart-drawer";
 const NAV = [
   { href: "/", label: "Shop", match: (p: string) => p === "/" || p.startsWith("/products") },
   { href: "/support", label: "Support", match: (p: string) => p.startsWith("/support") },
-  { href: "/dev", label: "Test setup", match: (p: string) => p.startsWith("/dev") },
 ];
 
 export function Header() {

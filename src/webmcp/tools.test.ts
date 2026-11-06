@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getAllProducts } from "@/lib/catalog";
+import { useAgentCartChanges } from "@/stores/agent-cart-changes";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
-import { useCatalogFilters } from "@/stores/catalog-filters";
-import { useOrder } from "@/stores/order";
+import { PRICE_MAX, useCatalogFilters } from "@/stores/catalog-filters";
 import {
   INJECTED_PRODUCT_ID,
   INJECTED_TEXT,
@@ -36,7 +36,7 @@ beforeEach(() => {
   useCart.setState({ items: [] });
   useCartDrawer.setState({ isOpen: false });
   useCatalogFilters.getState().clearAll();
-  useOrder.getState().reset();
+  useAgentCartChanges.setState({ count: 0 });
   openCheckout.mockClear();
   showCatalog.mockClear();
 });
@@ -49,8 +49,8 @@ describe("tool definitions", () => {
       "get_cart",
       "add_to_cart",
       "remove_from_cart",
+      "set_quantity",
       "open_checkout",
-      "place_order",
     ]);
     for (const tool of tools) {
       expect(tool.name.length).toBeLessThanOrEqual(30);
@@ -127,14 +127,24 @@ describe("search_products", () => {
     expect(useCatalogFilters.getState()).toMatchObject({
       query: "",
       category: "",
-      maxPrice: 200,
+      maxPrice: PRICE_MAX,
       size: "",
     });
   });
 
+  it("returns an error for a maxPrice of 0 or less and leaves the page as it is", async () => {
+    for (const maxPrice of [0, -5]) {
+      expect(await run("search_products", { maxPrice })).toEqual({
+        error: "maxPrice must be a number in USD, above 0.",
+      });
+    }
+    expect(showCatalog).not.toHaveBeenCalled();
+    expect(useCatalogFilters.getState().maxPrice).toBe(PRICE_MAX);
+  });
+
   it("returns an error for a filter of the wrong type", async () => {
     expect(await run("search_products", { maxPrice: "150" })).toEqual({
-      error: "maxPrice must be a number in USD.",
+      error: "maxPrice must be a number in USD, above 0.",
     });
     expect(await run("search_products", { query: 42 })).toEqual({
       error: "query must be text.",
@@ -210,6 +220,7 @@ describe("add_to_cart", () => {
     // The UI and the tools share one store.
     expect(useCart.getState().items).toHaveLength(1);
     expect(useCartDrawer.getState().isOpen).toBe(true);
+    expect(useAgentCartChanges.getState().count).toBe(1);
   });
 
   it("treats a null quantity as 1", async () => {
@@ -231,6 +242,7 @@ describe("add_to_cart", () => {
     });
     expect(useCart.getState().items).toEqual([]);
     expect(useCartDrawer.getState().isOpen).toBe(false);
+    expect(useAgentCartChanges.getState().count).toBe(0);
   });
 
   it("lists every color, even one with nothing in stock, when the color is unknown", async () => {
@@ -263,9 +275,9 @@ describe("add_to_cart", () => {
 });
 
 describe("remove_from_cart", () => {
-  it("removes exactly one item", async () => {
+  it("removes exactly one item, with all its units", async () => {
     const { addToCart } = useCart.getState();
-    addToCart("mist-trail-jacket", "M", "blue", 1);
+    addToCart("mist-trail-jacket", "M", "blue", 2);
     addToCart("mist-trail-jacket", "M", "black", 1);
 
     const cart = (await run("remove_from_cart", {
@@ -274,6 +286,7 @@ describe("remove_from_cart", () => {
       color: "blue",
     })) as { items: { color: string }[] };
     expect(cart.items.map((item) => item.color)).toEqual(["black"]);
+    expect(useAgentCartChanges.getState().count).toBe(1);
   });
 
   it("returns an error when the item isn't in the cart", async () => {
@@ -295,26 +308,77 @@ describe("remove_from_cart", () => {
   });
 });
 
-describe("open_checkout", () => {
-  it("opens checkout and does not clear the cart", async () => {
+describe("set_quantity", () => {
+  const blueJacketInM = {
+    productId: "mist-trail-jacket",
+    size: "M",
+    color: "blue",
+  };
+
+  it("changes the quantity and returns the updated cart", async () => {
+    useCart.getState().addToCart("mist-trail-jacket", "M", "blue", 2);
+    expect(
+      await run("set_quantity", { ...blueJacketInM, quantity: 1 }),
+    ).toMatchObject({
+      items: [{ ...blueJacketInM, quantity: 1 }],
+      total: 128,
+      totalQuantity: 1,
+    });
+    expect(useAgentCartChanges.getState().count).toBe(1);
+  });
+
+  it("points to remove_from_cart for a quantity of 0 and keeps the item", async () => {
+    useCart.getState().addToCart("mist-trail-jacket", "M", "blue", 2);
+    expect(
+      await run("set_quantity", { ...blueJacketInM, quantity: 0 }),
+    ).toEqual({
+      error:
+        "quantity must be a whole number, 1 or more. To remove the item, use remove_from_cart.",
+    });
+    expect(useCart.getState().items).toEqual([{ ...blueJacketInM, quantity: 2 }]);
+    expect(useAgentCartChanges.getState().count).toBe(0);
+  });
+
+  it("returns the store's error when the item isn't in the cart or there isn't enough stock", async () => {
+    expect(
+      await run("set_quantity", { ...blueJacketInM, quantity: 1 }),
+    ).toEqual({ error: "mist-trail-jacket in blue, size M is not in the cart." });
+
+    // 3 blue jackets in M are in stock.
     useCart.getState().addToCart("mist-trail-jacket", "M", "blue", 1);
-    await run("open_checkout");
-    expect(openCheckout).toHaveBeenCalledOnce();
-    expect(useCart.getState().items).toHaveLength(1);
+    expect(
+      await run("set_quantity", { ...blueJacketInM, quantity: 4 }),
+    ).toEqual({ error: "Only 3 left in Blue, size M for Mist Trail Jacket." });
+    expect(useCart.getState().items).toEqual([{ ...blueJacketInM, quantity: 1 }]);
   });
 });
 
-describe("place_order", () => {
-  it("places the order, empties the cart, and opens checkout", async () => {
+describe("open_checkout", () => {
+  it("opens checkout and returns what the customer will review there", async () => {
     useCart.getState().addToCart("mist-trail-jacket", "M", "blue", 1);
-    expect(await run("place_order")).toBe("Order placed.");
-    expect(useCart.getState().items).toEqual([]);
-    expect(useOrder.getState().placed).toBe(true);
+    expect(await run("open_checkout")).toEqual({
+      items: [
+        {
+          productId: "mist-trail-jacket",
+          name: "Mist Trail Jacket",
+          size: "M",
+          color: "blue",
+          quantity: 1,
+          unitPrice: 128,
+        },
+      ],
+      total: 128,
+      totalQuantity: 1,
+      nextStep: "The customer reviews the cart and clicks Place order.",
+    });
     expect(openCheckout).toHaveBeenCalledOnce();
+    expect(useCart.getState().items).toHaveLength(1);
   });
 
-  it("returns an error when the cart is empty and does not place the order", async () => {
-    expect(await run("place_order")).toEqual({ error: "Cart is empty." });
-    expect(useOrder.getState().placed).toBe(false);
+  it("returns an error for an empty cart and stays on the page", async () => {
+    expect(await run("open_checkout")).toEqual({
+      error: "The cart is empty. Add a product before opening checkout.",
+    });
+    expect(openCheckout).not.toHaveBeenCalled();
   });
 });

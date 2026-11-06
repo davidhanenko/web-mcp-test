@@ -5,9 +5,9 @@ type Props = {
   min?: number;
   max: number;
   onChange: (value: number) => void;
-  /** Product name, appended to the accessible names when there are several steppers on screen. */
+
   itemName?: string;
-  /** Id of a visible label element that names the group. */
+
   labelledBy?: string;
   size?: "md" | "lg";
 };

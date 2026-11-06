@@ -7,10 +7,10 @@ import {
   type Product,
   type Size,
 } from "@/lib/types";
+import { useAgentCartChanges } from "@/stores/agent-cart-changes";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { useCatalogFilters } from "@/stores/catalog-filters";
-import { useOrder } from "@/stores/order";
 import { withInjection } from "@/webmcp/test-flags";
 
 // Keeps the result under Chrome's 1.5K-character limit per tool result.
@@ -24,6 +24,7 @@ type SearchInput = {
 };
 type CartItemInput ={ productId: string; size: string; color: string };
 type AddToCartInput = CartItemInput & { quantity?: number | null };
+type SetQuantityInput = CartItemInput & { quantity: number };
 
 const cartItemProperties = {
   productId: {
@@ -65,7 +66,8 @@ export function createTools({
         const { query, category, maxPrice, size } = input as SearchInput;
 
         // The browser doesn't check input against inputSchema, and searchProducts doesn't either.
-        // Agents often send null or "" for filters they don't use, so falsy means "not given".
+        // Agents often send null or "" for filters they don't use, so those mean "not given".
+        // A maxPrice of 0 is a given price, though: the shop page would show nothing for it.
         if (query && typeof query !== "string") {
           return { error: "query must be text." };
         }
@@ -74,8 +76,10 @@ export function createTools({
             error: `Unknown category: ${category}. Use one of: ${CATEGORIES.join(", ")}.`,
           };
         }
-        if (maxPrice && typeof maxPrice !== "number") {
-          return { error: "maxPrice must be a number in USD." };
+        const hasMaxPrice =
+          maxPrice !== undefined && maxPrice !== null && (maxPrice as unknown) !== "";
+        if (hasMaxPrice && !(typeof maxPrice === "number" && maxPrice > 0)) {
+          return { error: "maxPrice must be a number in USD, above 0." };
         }
         if (size && !isOneOf(size, SIZES)) {
           return {
@@ -89,7 +93,7 @@ export function createTools({
         const matches = searchProducts({
           query: query || undefined,
           category: category || undefined,
-          maxPrice: maxPrice || undefined,
+          maxPrice: typeof maxPrice === "number" ? maxPrice : undefined,
           size: size || undefined,
         });
         return {
@@ -176,14 +180,12 @@ export function createTools({
         try {
           useCart.getState().addToCart(productId, size, color, quantity ?? 1);
         } catch (error) {
-          // A thrown error's message never reaches the agent, so return it.
-          const message =
-            error instanceof Error ? error.message : "The tool failed unexpectedly.";
           const product = getProduct(productId);
-          if (!product) return { error: message };
+          if (!product) return { error: errorMessage(error) };
           // What's in stock, so the agent can retry.
-          return { error: message, inStock: getSizesInStockByColor(product) };
+          return { error: errorMessage(error), inStock: getSizesInStockByColor(product) };
         }
+        recordAgentChange();
         useCartDrawer.getState().open();
         return getCartForAgent();
       },
@@ -192,7 +194,7 @@ export function createTools({
     {
       name: "remove_from_cart",
       description:
-        "Remove one item from the cart, identified by product id, size and color. Returns the updated cart.",
+        "Remove a product in one size and color from the cart, with all its units. Returns the updated cart.",
       inputSchema: {
         type: "object",
         properties: cartItemProperties,
@@ -207,6 +209,41 @@ export function createTools({
           };
         }
         useCart.getState().removeFromCart(productId, size, color);
+        recordAgentChange();
+        return getCartForAgent();
+      },
+    },
+
+    {
+      name: "set_quantity",
+      description:
+        "Change how many units of a cart item, identified by product id, size and color, are in the cart. Returns the updated cart.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          ...cartItemProperties,
+          quantity: {
+            type: "integer",
+            minimum: 1,
+            description: "The new number of units, 1 or more.",
+          },
+        },
+        required: ["productId", "size", "color", "quantity"],
+      },
+      execute(input) {
+        const { productId, size, color, quantity } = input as SetQuantityInput;
+        // setQuantity removes the item at 0; removing is remove_from_cart's job.
+        if (!Number.isInteger(quantity) || quantity < 1) {
+          return {
+            error: "quantity must be a whole number, 1 or more. To remove the item, use remove_from_cart.",
+          };
+        }
+        try {
+          useCart.getState().setQuantity(productId, size, color, quantity);
+        } catch (error) {
+          return { error: errorMessage(error) };
+        }
+        recordAgentChange();
         return getCartForAgent();
       },
     },
@@ -214,26 +251,18 @@ export function createTools({
     {
       name: "open_checkout",
       description:
-        "Open the checkout review page, which shows the cart and total. It does not place the order; the customer places it.",
+        "Open the checkout page, where the customer reviews the cart and places the order. Returns the items and total shown there.",
       inputSchema: { type: "object", properties: {} },
       execute() {
+        const cart = getCartForAgent();
+        if (cart.items.length === 0) {
+          return { error: "The cart is empty. Add a product before opening checkout." };
+        }
         openCheckout();
-        return "Checkout review is open. The customer places the order.";
-      },
-    },
-
-    {
-      name: "place_order",
-      description:
-        "Place the order for the current cart. This charges the customer. Use only after they confirm they want to buy.",
-      inputSchema: { type: "object", properties: {} },
-      annotations: { consequentialHint: true },
-      execute() {
-        useCartDrawer.getState().close();
-        openCheckout();
-        const result = useOrder.getState().placeOrder();
-        if (result && "error" in result) return result;
-        return "Order placed.";
+        return {
+          ...cart,
+          nextStep: "The customer reviews the cart and clicks Place order.",
+        };
       },
     },
   ];
@@ -253,6 +282,16 @@ function getCartForAgent() {
     total,
     totalQuantity,
   };
+}
+
+/** Lets checkout tell the customer that the agent changed the cart. */
+function recordAgentChange() {
+  useAgentCartChanges.getState().recordChange();
+}
+
+/** A thrown error's message never reaches the agent, so tools return it instead. */
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : "The tool failed unexpectedly.";
 }
 
 function getSizesInStock(product: Product): Size[] {

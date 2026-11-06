@@ -1,10 +1,16 @@
 "use client";
 
 import { create } from "zustand";
+import { getAllProducts } from "@/lib/catalog";
 import type { Category, Size } from "@/lib/types";
 
 export const PRICE_MIN = 10;
-export const PRICE_MAX = 200;
+export const PRICE_STEP = 10;
+/** The highest product price, rounded up to a whole step so the slider can reach it. */
+export const PRICE_MAX =
+  Math.ceil(
+    Math.max(PRICE_MIN, ...getAllProducts().map((product) => product.price)) / PRICE_STEP,
+  ) * PRICE_STEP;
 
 type SearchFilters = {
   query?: string | null;

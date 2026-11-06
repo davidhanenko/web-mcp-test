@@ -1,25 +1,25 @@
 "use client";
 
 import { create } from "zustand";
+import type { CartDetails } from "@/lib/types";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { saveLastOrder } from "@/webmcp/test-flags";
 
 type OrderState = {
-  placed: boolean;
+  /** The last order placed in this tab, shown on the confirmation page. Kept in memory only. */
+  lastOrder: CartDetails | null;
   placeOrder: () => void | { error: string };
-  reset: () => void;
 };
 
 export const useOrder = create<OrderState>((set) => ({
-  placed: false,
+  lastOrder: null,
   placeOrder: () => {
-    const items = useCart.getState().items;
-    if (items.length === 0) return { error: "Cart is empty." };
-    saveLastOrder(items);
+    const cart = useCart.getState().getCart();
+    if (cart.items.length === 0) return { error: "Cart is empty." };
+    saveLastOrder(useCart.getState().items);
     useCart.getState().clearCart();
     useCartDrawer.getState().close();
-    set({ placed: true });
+    set({ lastOrder: cart });
   },
-  reset: () => set({ placed: false }),
 }));

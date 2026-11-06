@@ -20,9 +20,14 @@ describe("tools mode", () => {
   });
 
   it("reads back the saved mode", () => {
-    saveToolsMode("basic");
-    expect(readToolsMode()).toBe("basic");
     saveToolsMode("off");
     expect(readToolsMode()).toBe("off");
+    saveToolsMode("adapted");
+    expect(readToolsMode()).toBe("adapted");
+  });
+
+  it("reads the removed basic mode as adapted", () => {
+    localStorage.setItem(TOOLS_MODE_STORAGE_KEY, "basic");
+    expect(readToolsMode()).toBe("adapted");
   });
 });

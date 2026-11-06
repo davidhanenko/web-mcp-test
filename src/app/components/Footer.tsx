@@ -5,7 +5,6 @@ export function Footer() {
         <p className="text-sm font-bold tracking-[0.12em] uppercase [font-stretch:115%]">
           Northline Supply
         </p>
-        <p className="text-sm text-muted">Demo store. No real payments are taken.</p>
       </div>
     </footer>
   );

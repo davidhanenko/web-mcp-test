@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from "react";
 
 /** Which WebMCP tools the page offers. Set on /dev for tests; real visitors get "adapted". */
-export type ToolsMode = "off" | "basic" | "adapted";
-export const TOOLS_MODES: ToolsMode[] = ["off", "basic", "adapted"];
+export type ToolsMode = "off" | "adapted";
+export const TOOLS_MODES: ToolsMode[] = ["off", "adapted"];
 
 export const TOOLS_MODE_STORAGE_KEY = "northline-tools-mode";
 const DEFAULT_TOOLS_MODE: ToolsMode = "adapted";
