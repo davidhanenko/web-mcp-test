@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SuccessMark } from "@/app/components/SuccessMark";
 
 const TOPICS = ["Order help", "Sizing", "Returns", "Something else"] as const;
@@ -10,6 +10,13 @@ const field =
 
 export function SupportForm() {
   const [submitted, setSubmitted] = useState(false);
+
+  // With cacheComponents, Next keeps this page hidden after the customer leaves instead of
+  // unmounting it. Show the form again on return, so contact_support is available.
+  // https://nextjs.org/docs/app/guides/preserving-ui-state#resetting-stale-status-messages
+  useLayoutEffect(() => {
+    return () => setSubmitted(false);
+  }, []);
 
   return (
     <div className="mt-10 rounded-lg bg-panel p-6 sm:p-10">

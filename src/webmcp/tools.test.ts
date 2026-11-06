@@ -36,7 +36,7 @@ beforeEach(() => {
   useCart.setState({ items: [] });
   useCartDrawer.setState({ isOpen: false });
   useCatalogFilters.getState().clearAll();
-  useAgentCartChanges.setState({ count: 0 });
+  useAgentCartChanges.setState({ count: 0, countAtCheckoutOpen: 0 });
   openCheckout.mockClear();
   showCatalog.mockClear();
 });

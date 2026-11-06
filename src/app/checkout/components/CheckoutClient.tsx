@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { CenteredMessage } from "@/app/checkout/components/CenteredMessage";
 import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { useIsSavedCartLoaded } from "@/hooks/useIsSavedCartLoaded";
@@ -21,9 +21,15 @@ export function CheckoutClient() {
 
   // Changes the agent made before this page opened are already in what the customer sees.
   // Only changes made while the customer is reviewing need a notice.
-  const agentChanges = useAgentCartChanges((s) => s.count);
-  const [agentChangesAtOpen] = useState(agentChanges);
-  const cartChangedByAgent = agentChanges > agentChangesAtOpen;
+  const cartChangedByAgent = useAgentCartChanges((s) => s.count > s.countAtCheckoutOpen);
+
+  // With cacheComponents, Next keeps this page hidden after the customer leaves instead of
+  // unmounting it, and runs this effect again when they come back.
+  // https://nextjs.org/docs/app/guides/preserving-ui-state#resetting-stale-status-messages
+  useLayoutEffect(() => {
+    useAgentCartChanges.getState().markCheckoutOpened();
+    return () => setIsPlacing(false);
+  }, []);
 
   function placeOrder() {
     const result = useOrder.getState().placeOrder();
