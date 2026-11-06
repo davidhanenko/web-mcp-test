@@ -23,8 +23,8 @@ export function ProductView({
     product.colors.find((option) => option.id === colorId) ?? product.colors[0];
 
   return (
-    <article className="grid gap-10 md:grid-cols-2 lg:gap-16">
-      <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+    <article className="grid items-start gap-6 md:grid-cols-2 lg:gap-10">
+      <div className="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-lg">
         <Image
           src={product.image}
           alt={product.name}

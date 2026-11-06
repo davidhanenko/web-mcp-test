@@ -35,6 +35,14 @@ declare global {
     /** Missing in browsers without WebMCP. */
     modelContext?: ModelContext;
   }
+
+  // Declarative API: a form tool's submit event.
+  interface SubmitEvent {
+    /** True when an agent submitted the form. Missing in browsers without WebMCP. */
+    agentInvoked?: boolean;
+    /** The tool result for the agent. Required after preventDefault() when agentInvoked. */
+    respondWith?: (result: Promise<unknown>) => void;
+  }
 }
 
 // Declarative API: these attributes turn a <form> into a tool.

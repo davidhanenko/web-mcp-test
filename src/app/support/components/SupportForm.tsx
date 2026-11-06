@@ -31,6 +31,13 @@ export function SupportForm() {
           className="space-y-6"
           onSubmit={(event) => {
             event.preventDefault();
+            // After preventDefault(), the agent's call fails unless respondWith() gives it a result.
+            const submitEvent = event.nativeEvent as SubmitEvent;
+            if (submitEvent.agentInvoked) {
+              submitEvent.respondWith?.(
+                Promise.resolve({ sent: true, message: "The message was sent to support." }),
+              );
+            }
             setSubmitted(true);
           }}
         >

@@ -22,7 +22,7 @@ export default async function ProductPage({
 
   return (
     <div>
-      <nav aria-label="Breadcrumb" className="mb-8">
+      <nav aria-label="Breadcrumb" className="mb-4 text-sm">
         <ol className="flex flex-wrap items-center gap-2 text-muted">
           <li>
             <Link href="/" className="underline underline-offset-2 hover:text-ink">
@@ -53,13 +53,13 @@ export default async function ProductPage({
             </li>
           ))}
         </ul>
-        <h1 className="font-display mt-4 text-4xl sm:text-5xl lg:text-[3.5rem]">
+        <h1 className="font-display mt-3 text-3xl sm:text-4xl">
           {product.name}
         </h1>
-        <p className="mt-5 text-3xl font-extrabold">
+        <p className="mt-3 text-2xl font-extrabold">
           {formatPrice(product.price)}
         </p>
-        <p className="mt-5 text-lg leading-8 text-slate-700">
+        <p className="mt-3 text-base leading-7 text-slate-700">
           {product.description}
           <HiddenInjection productId={product.id} />
         </p>

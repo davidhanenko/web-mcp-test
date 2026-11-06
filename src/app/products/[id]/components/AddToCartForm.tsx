@@ -95,11 +95,10 @@ export function AddToCartForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-8 space-y-7">
+    <form onSubmit={onSubmit} className="mt-5 space-y-4">
       <ChipRadioGroup
         legend="Color"
         name="color"
-        size="lg"
         value={colorId}
         onChange={handleColorChange}
         aside={color.name}
@@ -117,7 +116,6 @@ export function AddToCartForm({
       <ChipRadioGroup
         legend="Size"
         name="size"
-        size="lg"
         value={size}
         onChange={onSizeChange}
         aside={stockText}
@@ -130,13 +128,12 @@ export function AddToCartForm({
       />
 
       <div>
-        <span id="quantity-label" className="label-caps mb-3 block">
+        <span id="quantity-label" className="label-caps mb-2 block">
           Quantity
         </span>
         <QuantityStepper
           labelledBy="quantity-label"
-          size="lg"
-          value={quantity}
+            value={quantity}
           max={Math.max(stock, 1)}
           onChange={setQuantity}
         />
@@ -145,7 +142,7 @@ export function AddToCartForm({
       <button
         type="submit"
         disabled={colorSoldOut}
-        className="h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-panel disabled:text-muted"
+        className="h-12 w-full rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-panel disabled:text-muted"
       >
         {soldOut
           ? "Sold out"
@@ -155,9 +152,9 @@ export function AddToCartForm({
       </button>
 
       {/* Reserved slot so the confirmation never shifts the layout. */}
-      <div role="status" className="min-h-14">
+      <div role="status" className="min-h-12">
         {result?.kind === "added" ? (
-          <div className="flex min-h-14 items-center gap-3 rounded-md bg-ink px-5 py-3 text-white">
+          <div className="flex min-h-12 items-center gap-3 rounded-md bg-ink px-5 py-3 text-white">
             <CheckIcon className="shrink-0 text-accent" width={18} height={18} />
             <p className="flex-1">
               Added to cart: {product.name}, {result.colorName}, {result.size}
@@ -171,7 +168,7 @@ export function AddToCartForm({
             </button>
           </div>
         ) : result?.kind === "error" ? (
-          <p className="flex min-h-14 items-center rounded-md border border-red-600 bg-red-50 px-5 py-3 text-red-800">
+          <p className="flex min-h-12 items-center rounded-md border border-red-600 bg-red-50 px-5 py-3 text-red-800">
             {result.message}
           </p>
         ) : null}
