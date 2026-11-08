@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { CartDrawer } from "@/app/components/CartDrawer";
 import { SavedCartLoader } from "@/app/components/SavedCartLoader";
 import { Footer } from "@/app/components/Footer";
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CartDrawer />
         <ToastRegion />
         <WebMcpTools />
+        <Analytics />
       </body>
     </html>
   );
