@@ -2,7 +2,13 @@ export const CATEGORIES = ["jackets", "boots", "socks", "shirts"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export const SIZES = ["XS", "S", "M", "L", "XL"] as const;
-export type Size = (typeof SIZES)[number];
+export type ApparelSize = (typeof SIZES)[number];
+
+export const SHOE_SIZES = ["8", "9", "10", "11", "12"] as const;
+export type ShoeSize = (typeof SHOE_SIZES)[number];
+
+// Apparel letters or boot numbers. The tool schema still lists only SIZES.
+export type Size = ApparelSize | ShoeSize;
 
 /** One color a product comes in, with its own stock per size. */
 export type ProductColor = {

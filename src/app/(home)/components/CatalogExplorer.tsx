@@ -1,27 +1,40 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ChipRadioGroup, type ChipOption } from "@/app/components/ChipRadioGroup";
 import { SearchIcon } from "@/app/components/icons";
 import { SelectField } from "@/app/components/SelectField";
 import { ProductCard } from "./ProductCard";
 import { searchProducts } from "@/lib/catalog";
-import { CATEGORIES, SIZES, type Category, type Product, type Size } from "@/lib/types";
-import { PRICE_MAX, useCatalogFilters } from "@/stores/catalog-filters";
+import {
+  CATEGORIES,
+  SHOE_SIZES,
+  SIZES,
+  type Category,
+  type Product,
+  type Size,
+} from "@/lib/types";
+import {
+  PRICE_MAX,
+  PRICE_MIN,
+  PRICE_STEP,
+  useCatalogFilters,
+} from "@/stores/catalog-filters";
 
-const PAGE_SIZE = 8;
-const PRICE_STEPS = [50, 100, 150, 200, 250];
+const PAGE_SIZE = 12;
 
 type Sort = "featured" | "price-asc" | "price-desc" | "name";
 
-function priceOptions(current: number) {
-  const steps = new Set(PRICE_STEPS);
-  if (current !== PRICE_MAX) steps.add(current);
-  return [
-    { value: PRICE_MAX, label: "Any" },
-    ...[...steps]
-      .sort((a, b) => a - b)
-      .map((value) => ({ value, label: `$${value}` })),
-  ];
+const CATEGORY_OPTIONS: ChipOption<Category | "">[] = [
+  { value: "", label: "All" },
+  ...CATEGORIES.map((value) => ({
+    value,
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+  })),
+];
+
+function sizeChoices(group: readonly Size[]): ChipOption<Size | "">[] {
+  return group.map((value) => ({ value, label: value }));
 }
 
 function sortProducts(products: Product[], sort: Sort): Product[] {
@@ -60,6 +73,9 @@ export function CatalogExplorer({
   }, [initialCategory, setCategory]);
 
   const anyPrice = maxPrice >= PRICE_MAX;
+  const priceText = anyPrice ? "Any price" : `$${maxPrice}`;
+  const showApparel = category !== "boots";
+  const showShoes = category === "" || category === "boots";
   const filterKey = `${query}|${category}|${maxPrice}|${size}|${inStockOnly}|${sort}`;
   const [seenKey, setSeenKey] = useState(filterKey);
   if (seenKey !== filterKey) {
@@ -94,6 +110,13 @@ export function CatalogExplorer({
     clearAll();
   }
 
+  function chooseCategory(next: Category | "") {
+    setCategory(next);
+    const allowed =
+      next === "boots" ? SHOE_SIZES : next === "" ? [...SIZES, ...SHOE_SIZES] : SIZES;
+    if (size && !(allowed as readonly string[]).includes(size)) setSize("");
+  }
+
   return (
     <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-12">
       <aside className="self-start rounded-lg bg-panel p-7 lg:sticky lg:top-6">
@@ -118,46 +141,74 @@ export function CatalogExplorer({
             </button>
           </div>
 
-          <SelectField
-            id="category"
-            label="Category"
+          <ChipRadioGroup
+            legend="Category"
+            name="category"
+            options={CATEGORY_OPTIONS}
             value={category}
-            onChange={(event) => setCategory(event.target.value as Category | "")}
-          >
-            <option value="">All</option>
-            {CATEGORIES.map((value) => (
-              <option key={value} value={value}>
-                {value.charAt(0).toUpperCase() + value.slice(1)}
-              </option>
-            ))}
-          </SelectField>
+            onChange={chooseCategory}
+            showCheck
+          />
 
-          <SelectField
-            id="max-price"
-            label="Max price"
-            value={maxPrice}
-            onChange={(event) => setMaxPrice(Number(event.target.value))}
-          >
-            {priceOptions(maxPrice).map((option) => (
-              <option key={option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </SelectField>
+          <div>
+            <div className="mb-4 flex items-baseline justify-between">
+              <label htmlFor="max-price" className="label-caps">
+                Max price
+              </label>
+              <span className="font-semibold" aria-hidden>
+                {priceText}
+              </span>
+            </div>
+            <input
+              id="max-price"
+              type="range"
+              min={PRICE_MIN}
+              max={PRICE_MAX}
+              step={PRICE_STEP}
+              value={Math.min(maxPrice, PRICE_MAX)}
+              onChange={(event) => setMaxPrice(Number(event.target.value))}
+              aria-valuetext={priceText}
+              className="range-ink w-full"
+            />
+            <div
+              className="mt-2 flex justify-between text-sm text-muted"
+              aria-hidden
+            >
+              <span>${PRICE_MIN}</span>
+              <span>${PRICE_MAX}+</span>
+            </div>
+          </div>
 
-          <SelectField
-            id="size"
-            label="Size"
-            value={size}
-            onChange={(event) => setSize(event.target.value as Size | "")}
-          >
-            <option value="">Any</option>
-            {SIZES.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </SelectField>
+          <div className="space-y-6">
+            <div className="flex items-baseline justify-between">
+              <p className="label-caps">Size</p>
+              <button
+                type="button"
+                onClick={() => setSize("")}
+                className="text-sm font-medium underline underline-offset-2"
+              >
+                Any
+              </button>
+            </div>
+            {showApparel ? (
+              <ChipRadioGroup
+                legend="Apparel"
+                name="apparel-size"
+                options={sizeChoices(SIZES)}
+                value={size}
+                onChange={setSize}
+              />
+            ) : null}
+            {showShoes ? (
+              <ChipRadioGroup
+                legend="Boots"
+                name="shoe-size"
+                options={sizeChoices(SHOE_SIZES)}
+                value={size}
+                onChange={setSize}
+              />
+            ) : null}
+          </div>
 
           <fieldset>
             <legend className="label-caps mb-3">Availability</legend>
@@ -181,7 +232,11 @@ export function CatalogExplorer({
               Shop all
             </h1>
             <p role="status" className="mt-1 text-muted">
-              {products.length} {products.length === 1 ? "product" : "products"}
+              {products.length === 0
+                ? "0 products"
+                : `Showing ${
+                    (currentPage - 1) * PAGE_SIZE + 1
+                  }–${Math.min(currentPage * PAGE_SIZE, products.length)} of ${products.length}`}
             </p>
           </div>
           <div className="flex w-full flex-col gap-4 sm:max-w-md sm:flex-row sm:items-end">

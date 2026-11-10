@@ -44,7 +44,7 @@ export function CheckoutClient() {
     }
     if (next !== PROMO_CODE) {
       setCodeError(
-        `That code doesn't work. ${PROMO_CODE} takes $30 off each Ember Down Jacket.`,
+        "That code isn't valid.",
       );
       return;
     }

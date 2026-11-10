@@ -39,21 +39,49 @@ export function hasStock(
     .some((color) => sizes.some((available) => (color.stock[available] ?? 0) > 0));
 }
 
+const STOP_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "for",
+  "of",
+  "in",
+  "on",
+  "to",
+  "and",
+  "or",
+  "with",
+]);
+
+function wordsOf(text: string): string[] {
+  return text.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+// A term matches a catalog word when it is that word, or starts it ("water" matches waterproof).
+function termMatches(term: string, words: string[]): boolean {
+  return words.some(
+    (word) => word === term || (term.length >= 3 && word.startsWith(term)),
+  );
+}
+
 export function searchProducts(filters: SearchFilters = {}): Product[] {
   const query = filters.query?.trim().toLowerCase();
 
   return products.filter((product) => {
     if (query) {
-      const haystack = [
-        product.name,
-        product.description,
-        ...product.tags,
-        ...product.colors.map((color) => color.name),
-      ]
-        .join(" ")
-        .toLowerCase();
-      const terms = query.split(/\s+/);
-      if (!terms.every((term) => haystack.includes(term))) {
+      const words = wordsOf(
+        [
+          product.name,
+          product.description,
+          product.category,
+          ...product.tags,
+          ...product.colors.map((color) => color.name),
+        ].join(" "),
+      );
+      const terms = query
+        .split(/\s+/)
+        .filter((term) => term && !STOP_WORDS.has(term));
+      if (terms.length > 0 && !terms.every((term) => termMatches(term, words))) {
         return false;
       }
     }

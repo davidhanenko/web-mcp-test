@@ -39,7 +39,7 @@ function emptyCart() {
 function loadTaskBCart() {
   const { clearCart, addToCart } = useCart.getState();
   clearCart();
-  addToCart("ridge-hiker-boots", "M", "black", 1);
+  addToCart("ridge-hiker-boots", "10", "black", 1);
   addToCart("sun-trail-shirt", "M", "sand", 1);
 }
 

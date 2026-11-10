@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { ChipRadioGroup } from "@/app/components/ChipRadioGroup";
 import { CheckIcon } from "@/app/components/icons";
-import { SelectField } from "@/app/components/SelectField";
+import { QuantityStepper } from "@/app/components/QuantityStepper";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { getStock, hasStock } from "@/lib/catalog";
@@ -29,12 +30,11 @@ export function AddToCartForm({
   onColorChange,
 }: {
   product: Product;
-  // Selected color. Owned by the parent so the product image can show it too.
+  // Selected color. Empty until the shopper picks a swatch.
   colorId: string;
   onColorChange: (colorId: string) => void;
 }) {
-  const color =
-    product.colors.find((option) => option.id === colorId) ?? product.colors[0];
+  const color = product.colors.find((option) => option.id === colorId);
 
   const [size, setSize] = useState<Size | "">("");
   const [quantity, setQuantity] = useState(1);
@@ -42,11 +42,11 @@ export function AddToCartForm({
   const addToCart = useCart((s) => s.addToCart);
   const openCart = useCartDrawer((s) => s.open);
 
-  const stock = size ? getStock(product, colorId, size) : 0;
+  const stock = color && size ? getStock(product, color.id, size) : 0;
   const sizeChosen = size !== "";
-  const canAdd = sizeChosen && stock > 0;
+  const canAdd = Boolean(color) && sizeChosen && stock > 0;
 
-  const stockText = !sizeChosen
+  const stockText = !color || !sizeChosen
     ? ""
     : stock <= 0
       ? `Sold out in ${color.name}`
@@ -61,9 +61,9 @@ export function AddToCartForm({
     setResult(null);
   }
 
-  function onSizeChange(value: Size | "") {
+  function onSizeChange(value: Size) {
     setSize(value);
-    const nextStock = value ? getStock(product, colorId, value) : 0;
+    const nextStock = color ? getStock(product, color.id, value) : 0;
     setQuantity((current) =>
       Math.max(1, Math.min(current, Math.max(nextStock, 1))),
     );
@@ -72,7 +72,7 @@ export function AddToCartForm({
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!size || stock <= 0) return;
+    if (!color || !size || stock <= 0) return;
     try {
       addToCart(product.id, size, color.id, quantity);
       setResult({ kind: "added", size, colorName: color.name });
@@ -87,50 +87,50 @@ export function AddToCartForm({
 
   return (
     <form onSubmit={onSubmit} className="mt-5 space-y-4">
-      <SelectField
-        id="color"
-        label="Color"
+      <ChipRadioGroup
+        legend="Color"
+        name="color"
         value={colorId}
-        onChange={(event) => handleColorChange(event.target.value)}
-      >
-        {product.colors.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
-      </SelectField>
+        onChange={handleColorChange}
+        aside={color?.name}
+        options={product.colors.map((option) => ({
+          value: option.id,
+          label: option.name,
+          swatch: option.hex,
+        }))}
+      />
 
-      <SelectField
-        id="size"
-        label="Size"
-        value={size}
-        onChange={(event) => onSizeChange(event.target.value as Size | "")}
-      >
-        <option value="">Select a size</option>
-        {product.sizes.map((value) => (
-          <option key={value} value={value}>
-            {value}
-          </option>
-        ))}
-      </SelectField>
+      {color ? (
+        <ChipRadioGroup<Size | "">
+          legend="Size"
+          name="size"
+          value={size}
+          onChange={(value) => {
+            if (value) onSizeChange(value);
+          }}
+          options={product.sizes.map((value) => ({
+            value,
+            label: value,
+          }))}
+        />
+      ) : null}
 
       <div role="status" className="min-h-6 text-sm font-semibold">
         {stockText}
       </div>
 
       {canAdd ? (
-        <SelectField
-          id="quantity"
-          label="Quantity"
-          value={quantity}
-          onChange={(event) => setQuantity(Number(event.target.value))}
-        >
-          {Array.from({ length: stock }, (_, index) => index + 1).map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
-        </SelectField>
+        <div>
+          <span id="quantity-label" className="label-caps mb-2 block">
+            Quantity
+          </span>
+          <QuantityStepper
+            labelledBy="quantity-label"
+            value={quantity}
+            max={stock}
+            onChange={setQuantity}
+          />
+        </div>
       ) : null}
 
       <button
@@ -138,7 +138,9 @@ export function AddToCartForm({
         disabled={!canAdd}
         className="h-12 w-full rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-panel disabled:text-muted"
       >
-        {sizeChosen && stock <= 0 ? `Sold out in ${color.name}` : "Add to cart"}
+        {color && sizeChosen && stock <= 0
+          ? `Sold out in ${color.name}`
+          : "Add to cart"}
       </button>
 
       <div

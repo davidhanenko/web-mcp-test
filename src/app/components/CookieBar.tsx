@@ -1,10 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { saveCookieChoice, useMarketing } from "@/stores/marketing";
 
 export function CookieBar() {
   const { ready, cookieChoice } = useMarketing();
-  if (!ready || cookieChoice) return null;
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!ready || cookieChoice) {
+      setVisible(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setVisible(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, [ready, cookieChoice]);
+
+  if (!visible) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink px-6 py-4 text-white shadow-lg">

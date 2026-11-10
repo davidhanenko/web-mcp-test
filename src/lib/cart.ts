@@ -1,11 +1,14 @@
 import { getColor, getProduct, getStock } from "@/lib/catalog";
 import type { CartDetails, CartItem, Size } from "@/lib/types";
-import { SIZES } from "@/lib/types";
+import { SHOE_SIZES, SIZES } from "@/lib/types";
 
-/** Cart business rules. Plain functions with no React or store code, so they run anywhere. */
+// Cart business rules. Plain functions with no React or store code, so they run anywhere.
 
 function isSize(value: string): value is Size {
-  return (SIZES as readonly string[]).includes(value);
+  return (
+    (SIZES as readonly string[]).includes(value) ||
+    (SHOE_SIZES as readonly string[]).includes(value)
+  );
 }
 
 /** Throws unless `quantity` is a whole number ≥ 1 (or ≥ 0 when `allowZero`). */
