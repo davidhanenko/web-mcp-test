@@ -2,14 +2,21 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, type FormEvent } from "react";
 import { CenteredMessage } from "@/app/checkout/components/CenteredMessage";
 import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { useIsSavedCartLoaded } from "@/hooks/useIsSavedCartLoaded";
 import { useCartDetails } from "@/hooks/useCartDetails";
 import { formatPrice } from "@/lib/format";
+import {
+  normalizePromoCode,
+  payTotal,
+  PROMO_CODE,
+  promoDiscount,
+} from "@/lib/promo";
 import { useAgentCartChanges } from "@/stores/agent-cart-changes";
 import { useCartDrawer } from "@/stores/cart-drawer";
+import { saveAppliedCode, useMarketing } from "@/stores/marketing";
 import { useOrder } from "@/stores/order";
 
 export function CheckoutClient() {
@@ -18,6 +25,33 @@ export function CheckoutClient() {
   const openCart = useCartDrawer((s) => s.open);
   const isSavedCartLoaded = useIsSavedCartLoaded();
   const [isPlacing, setIsPlacing] = useState(false);
+  const marketing = useMarketing();
+  const [codeDraft, setCodeDraft] = useState<string | null>(null);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const codeValue = codeDraft ?? (marketing.ready ? marketing.appliedCode : "");
+  const discount = promoDiscount(items, marketing.appliedCode);
+  const due = payTotal(total, discount);
+  const codeApplied = normalizePromoCode(marketing.appliedCode) === PROMO_CODE;
+
+  function applyPromo(event: FormEvent) {
+    event.preventDefault();
+    const next = normalizePromoCode(codeValue);
+    if (!next) {
+      saveAppliedCode("");
+      setCodeDraft("");
+      setCodeError(null);
+      return;
+    }
+    if (next !== PROMO_CODE) {
+      setCodeError(
+        `That code doesn't work. ${PROMO_CODE} takes $30 off each Ember Down Jacket.`,
+      );
+      return;
+    }
+    saveAppliedCode(PROMO_CODE);
+    setCodeDraft(PROMO_CODE);
+    setCodeError(null);
+  }
 
   // Changes the agent made before this page opened are already in what the customer sees.
   // Only changes made while the customer is reviewing need a notice.
@@ -111,14 +145,69 @@ export function CheckoutClient() {
           >
             Order summary
           </h2>
-          <p className="mt-6 flex items-baseline justify-between">
-            <span className="text-lg font-semibold">Total</span>
-            <span className="text-4xl font-extrabold [font-stretch:110%]">
-              {formatPrice(total, { cents: true })}
-            </span>
-          </p>
-          {/* Always rendered, so screen readers announce the notice when it appears. */}
-          <div role="status">
+          <form onSubmit={applyPromo} className="mt-6">
+            <label htmlFor="promo-code" className="label-caps mb-2 block">
+              Promo code
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="promo-code"
+                value={codeValue}
+                onChange={(event) => {
+                  setCodeDraft(event.target.value);
+                  setCodeError(null);
+                }}
+                autoComplete="off"
+                className="h-12 min-w-0 flex-1 rounded-md border border-line bg-white px-3"
+              />
+              <button
+                type="submit"
+                className="h-12 rounded-md border border-ink bg-white px-4 font-semibold hover:bg-ink hover:text-white"
+              >
+                Apply
+              </button>
+            </div>
+            <p role="status" className="mt-2 min-h-6 text-sm">
+              {codeError
+                ? codeError
+                : codeApplied && discount === 0
+                  ? `${PROMO_CODE} applies to the Ember Down Jacket.`
+                  : null}
+            </p>
+          </form>
+          {codeApplied && discount > 0 ? (
+            <div className="mt-4 space-y-3">
+              <p className="flex items-baseline justify-between">
+                <span>Subtotal</span>
+                <span className="font-semibold">
+                  {formatPrice(total, { cents: true })}
+                </span>
+              </p>
+              <p className="flex items-baseline justify-between">
+                <span>Promo {PROMO_CODE}</span>
+                <span className="font-semibold">
+                  −{formatPrice(discount, { cents: true })}
+                </span>
+              </p>
+              <p className="flex items-baseline justify-between">
+                <span className="text-lg font-semibold">Pay total</span>
+                <span className="text-4xl font-extrabold [font-stretch:110%]">
+                  {formatPrice(due, { cents: true })}
+                </span>
+              </p>
+            </div>
+          ) : (
+            <p className="mt-4 flex items-baseline justify-between">
+              <span className="text-lg font-semibold">Total</span>
+              <span className="text-4xl font-extrabold [font-stretch:110%]">
+                {formatPrice(total, { cents: true })}
+              </span>
+            </p>
+          )}
+          <div
+            // Always rendered, so screen readers announce the notice when it appears.
+            role="status"
+          >
             {cartChangedByAgent ? (
               <p className="mt-6 rounded-md border border-ink bg-white px-4 py-3 font-semibold">
                 Your cart was changed. Check it before placing the order.

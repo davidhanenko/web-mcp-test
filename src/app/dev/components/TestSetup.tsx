@@ -2,6 +2,7 @@
 
 import { ChipRadioGroup } from "@/app/components/ChipRadioGroup";
 import { useCart } from "@/stores/cart";
+import { resetPopups } from "@/stores/marketing";
 import {
   saveToolsMode,
   TOOLS_MODES,
@@ -93,6 +94,13 @@ export function TestSetup() {
             Load task B cart
           </button>
         </div>
+      </section>
+
+      <section>
+        <h2 className="label-caps mb-3">Popups</h2>
+        <button type="button" className={buttonClass} onClick={resetPopups}>
+          Reset popups
+        </button>
       </section>
     </div>
   );

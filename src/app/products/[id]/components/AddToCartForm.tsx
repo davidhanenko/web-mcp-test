@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ChipRadioGroup } from "@/app/components/ChipRadioGroup";
 import { CheckIcon } from "@/app/components/icons";
-import { QuantityStepper } from "@/app/components/QuantityStepper";
+import { SelectField } from "@/app/components/SelectField";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { getStock, hasStock } from "@/lib/catalog";
@@ -16,7 +15,7 @@ type Result =
 
 const LOW_STOCK = 3;
 
-/** The color shown first: the first one that still has stock in some size. */
+// The color shown first: the first one that still has stock in some size.
 export function getDefaultColorId(product: Product): string {
   return (
     product.colors.find((option) => hasStock(product, undefined, option.id)) ??
@@ -30,58 +29,50 @@ export function AddToCartForm({
   onColorChange,
 }: {
   product: Product;
-  /** Selected color. Owned by the parent so the product image can show it too. */
+  // Selected color. Owned by the parent so the product image can show it too.
   colorId: string;
   onColorChange: (colorId: string) => void;
 }) {
   const color =
     product.colors.find((option) => option.id === colorId) ?? product.colors[0];
 
-  const stockOf = (value: Size, forColor = colorId) =>
-    getStock(product, forColor, value);
-  const firstInStock = product.sizes.find((value) => stockOf(value) > 0);
-
-  const [size, setSize] = useState<Size>(
-    product.sizes.find((value) => stockOf(value, colorId) > 0) ??
-      product.sizes[0],
-  );
+  const [size, setSize] = useState<Size | "">("");
   const [quantity, setQuantity] = useState(1);
   const [result, setResult] = useState<Result>(null);
   const addToCart = useCart((s) => s.addToCart);
   const openCart = useCartDrawer((s) => s.open);
 
-  const stock = stockOf(size);
-  const soldOut = !hasStock(product);
-  const colorSoldOut = firstInStock === undefined;
+  const stock = size ? getStock(product, colorId, size) : 0;
+  const sizeChosen = size !== "";
+  const canAdd = sizeChosen && stock > 0;
 
-  const stockText = colorSoldOut
-    ? `Sold out in ${color.name}`
-    : stock <= LOW_STOCK
-      ? `Only ${stock} left in ${size}`
-      : `${size} is in stock`;
+  const stockText = !sizeChosen
+    ? ""
+    : stock <= 0
+      ? `Sold out in ${color.name}`
+      : stock <= LOW_STOCK
+        ? `Only ${stock} left in ${size}`
+        : `${size} is in stock`;
 
   function handleColorChange(value: string) {
     onColorChange(value);
-    // Keep the size if this color has it, otherwise move to its first size in stock.
-    const next =
-      stockOf(size, value) > 0
-        ? size
-        : (product.sizes.find((option) => stockOf(option, value) > 0) ?? size);
-    setSize(next);
-    setQuantity((current) =>
-      Math.max(1, Math.min(current, Math.max(stockOf(next, value), 1))),
-    );
+    setSize("");
+    setQuantity(1);
     setResult(null);
   }
 
-  function onSizeChange(value: Size) {
+  function onSizeChange(value: Size | "") {
     setSize(value);
-    setQuantity((current) => Math.max(1, Math.min(current, stockOf(value))));
+    const nextStock = value ? getStock(product, colorId, value) : 0;
+    setQuantity((current) =>
+      Math.max(1, Math.min(current, Math.max(nextStock, 1))),
+    );
     setResult(null);
   }
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!size || stock <= 0) return;
     try {
       addToCart(product.id, size, color.id, quantity);
       setResult({ kind: "added", size, colorName: color.name });
@@ -96,63 +87,65 @@ export function AddToCartForm({
 
   return (
     <form onSubmit={onSubmit} className="mt-5 space-y-4">
-      <ChipRadioGroup
-        legend="Color"
-        name="color"
+      <SelectField
+        id="color"
+        label="Color"
         value={colorId}
-        onChange={handleColorChange}
-        aside={color.name}
-        options={product.colors.map((option) => ({
-          value: option.id,
-          label: option.name,
-          swatch: option.hex,
-          disabled: !hasStock(product, undefined, option.id),
-          srSuffix: !hasStock(product, undefined, option.id)
-            ? "(sold out)"
-            : undefined,
-        }))}
-      />
+        onChange={(event) => handleColorChange(event.target.value)}
+      >
+        {product.colors.map((option) => (
+          <option key={option.id} value={option.id}>
+            {option.name}
+          </option>
+        ))}
+      </SelectField>
 
-      <ChipRadioGroup
-        legend="Size"
-        name="size"
+      <SelectField
+        id="size"
+        label="Size"
         value={size}
-        onChange={onSizeChange}
-        aside={stockText}
-        options={product.sizes.map((value) => ({
-          value,
-          label: value,
-          disabled: stockOf(value) <= 0,
-          srSuffix: stockOf(value) <= 0 ? "(sold out)" : undefined,
-        }))}
-      />
+        onChange={(event) => onSizeChange(event.target.value as Size | "")}
+      >
+        <option value="">Select a size</option>
+        {product.sizes.map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </SelectField>
 
-      <div>
-        <span id="quantity-label" className="label-caps mb-2 block">
-          Quantity
-        </span>
-        <QuantityStepper
-          labelledBy="quantity-label"
-            value={quantity}
-          max={Math.max(stock, 1)}
-          onChange={setQuantity}
-        />
+      <div role="status" className="min-h-6 text-sm font-semibold">
+        {stockText}
       </div>
+
+      {canAdd ? (
+        <SelectField
+          id="quantity"
+          label="Quantity"
+          value={quantity}
+          onChange={(event) => setQuantity(Number(event.target.value))}
+        >
+          {Array.from({ length: stock }, (_, index) => index + 1).map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </SelectField>
+      ) : null}
 
       <button
         type="submit"
-        disabled={colorSoldOut}
+        disabled={!canAdd}
         className="h-12 w-full rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-panel disabled:text-muted"
       >
-        {soldOut
-          ? "Sold out"
-          : colorSoldOut
-            ? `Sold out in ${color.name}`
-            : "Add to cart"}
+        {sizeChosen && stock <= 0 ? `Sold out in ${color.name}` : "Add to cart"}
       </button>
 
-      {/* Reserved slot so the confirmation never shifts the layout. */}
-      <div role="status" className="min-h-12">
+      <div
+        // Reserved slot so the confirmation never shifts the layout.
+        role="status"
+        className="min-h-12"
+      >
         {result?.kind === "added" ? (
           <div className="flex min-h-12 items-center gap-3 rounded-md bg-ink px-5 py-3 text-white">
             <CheckIcon className="shrink-0 text-accent" width={18} height={18} />
