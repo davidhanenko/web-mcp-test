@@ -140,14 +140,3 @@ export function getSimilarProducts(product: Product, count: number): Product[] {
     count,
   });
 }
-
-/** The first color and size, in catalog order, that has stock. */
-export function firstAvailableVariant(
-  product: Product,
-): { colorId: string; size: Size } | undefined {
-  for (const color of product.colors) {
-    const size = product.sizes.find((value) => (color.stock[value] ?? 0) > 0);
-    if (size) return { colorId: color.id, size };
-  }
-  return undefined;
-}

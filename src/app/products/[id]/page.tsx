@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { HiddenInjection } from "./components/HiddenInjection";
 import { ProductDetails } from "./components/ProductDetails";
 import { ProductView } from "./components/ProductView";
+import { RelatedProducts } from "./components/RelatedProducts";
 import { Badge } from "@/app/components/Badge";
 import { getAllProducts, getProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
@@ -67,6 +68,7 @@ export default async function ProductPage({
       </ProductView>
 
       <ProductDetails productId={product.id} />
+      <RelatedProducts product={product} />
     </div>
   );
 }

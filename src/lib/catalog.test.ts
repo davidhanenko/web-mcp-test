@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  firstAvailableVariant,
   getProduct,
   getSimilarProducts,
   getStock,
@@ -116,13 +115,5 @@ describe("getSimilarProducts", () => {
     expect(similar.every((p) => p.category === "jackets")).toBe(true);
     expect(similar.map((p) => p.id)).not.toContain(jacket.id);
     expect(similar.every((p) => hasStock(p))).toBe(true);
-  });
-});
-
-describe("firstAvailableVariant", () => {
-  it("skips sold-out colors and sizes", () => {
-    const jacket = getProduct("mist-trail-jacket")!;
-    const variant = firstAvailableVariant(jacket)!;
-    expect(getStock(jacket, variant.colorId, variant.size)).toBeGreaterThan(0);
   });
 });

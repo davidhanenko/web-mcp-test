@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { CartSuggestions } from "@/app/components/CartSuggestions";
 import { CloseIcon } from "@/app/components/icons";
 import { QuantityStepper } from "@/app/components/QuantityStepper";
 import { useCartDetails } from "@/hooks/useCartDetails";
@@ -178,8 +177,6 @@ export function CartDrawer() {
             })}
           </ul>
         )}
-
-        <CartSuggestions />
 
         <div className="shrink-0 bg-panel px-6 pt-6 pb-5">
           <p role="status" className="min-h-5 text-sm text-red-700">
