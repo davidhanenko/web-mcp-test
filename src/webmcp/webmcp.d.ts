@@ -10,7 +10,7 @@ declare global {
   type ModelContextTool = {
     name: string;
     description: string;
-    /** JSON Schema. The browser does not check input against it, so `execute` must. */
+    // The browser does not check input against it, so execute must.
     inputSchema: Record<string, unknown>;
     execute: (
       input: ModelContextToolInput,
@@ -24,7 +24,7 @@ declare global {
   };
 
   interface ModelContext {
-    /** Aborting `options.signal` unregisters the tool. */
+    // Aborting options.signal unregisters the tool.
     registerTool(
       tool: ModelContextTool,
       options?: { signal?: AbortSignal },
@@ -32,15 +32,15 @@ declare global {
   }
 
   interface Document {
-    /** Missing in browsers without WebMCP. */
+    // Missing in browsers without WebMCP.
     modelContext?: ModelContext;
   }
 
   // Declarative API: a form tool's submit event.
   interface SubmitEvent {
-    /** True when an agent submitted the form. Missing in browsers without WebMCP. */
+    // True when an agent submitted the form. Missing without WebMCP.
     agentInvoked?: boolean;
-    /** The tool result for the agent. Required after preventDefault() when agentInvoked. */
+    // Required after preventDefault() when agentInvoked.
     respondWith?: (result: Promise<unknown>) => void;
   }
 }

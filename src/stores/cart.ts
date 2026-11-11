@@ -51,10 +51,7 @@ function isSameItem(
 type SavedItemV0 = { id: string; size: Size; qty: number };
 type SavedItemV1 = Omit<CartItem, "color">;
 
-/**
- * Version 0 saved items as `{ id, size, qty }`, version 1 as `{ productId, size, quantity }`,
- * version 2 adds `color`. Each step upgrades one version, so old carts load in order.
- */
+// v0 saved { id, size, qty }, v1 { productId, size, quantity }, v2 adds color; each step upgrades one version.
 function migrateSavedCart(saved: unknown, version: number): SavedCart {
   let items = (saved as { items?: unknown[] } | undefined)?.items ?? [];
 
@@ -105,7 +102,7 @@ export const useCart = create<CartState>()(
         });
       },
 
-      /** Without `size` and `color`, removes the product in every size and color. */
+      // Without size and color, removes the product in every size and color.
       removeFromCart(productId, size, color) {
         set((state) => ({
           items: state.items.filter(
@@ -117,7 +114,7 @@ export const useCart = create<CartState>()(
         }));
       },
 
-      /** Quantity 0 removes the item. */
+      // Quantity 0 removes the item.
       setQuantity(productId, size, color, quantity) {
         assertValidQuantity(quantity, { allowZero: true });
         assertProductExists(productId);

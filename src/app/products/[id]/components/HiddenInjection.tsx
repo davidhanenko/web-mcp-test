@@ -6,10 +6,7 @@ import {
   usePromptInjection,
 } from "@/webmcp/test-flags";
 
-/**
- * Prompt-injection test (flag on /dev): text people don't see but agents reading the
- * page do. Renders nothing unless the flag is on and this is the injected product.
- */
+// Prompt-injection test (flag on /dev): text agents read but people don't see.
 export function HiddenInjection({ productId }: { productId: string }) {
   const promptInjection = usePromptInjection();
   if (!promptInjection || productId !== INJECTED_PRODUCT_ID) return null;

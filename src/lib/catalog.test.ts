@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { getProduct, getStock, hasStock, searchProducts } from "@/lib/catalog";
+import {
+  getProduct,
+  getSimilarProducts,
+  getStock,
+  hasStock,
+  searchProducts,
+} from "@/lib/catalog";
 
 describe("searchProducts", () => {
   it("matches query against name, description, and tags", () => {
@@ -98,5 +104,16 @@ describe("getProduct", () => {
   it("returns a product by id and undefined when missing", () => {
     expect(getProduct("mist-trail-jacket")?.name).toBe("Mist Trail Jacket");
     expect(getProduct("no-such-item")).toBeUndefined();
+  });
+});
+
+describe("getSimilarProducts", () => {
+  it("returns other in-stock products from the same category", () => {
+    const jacket = getProduct("mist-trail-jacket")!;
+    const similar = getSimilarProducts(jacket, 3);
+    expect(similar).toHaveLength(3);
+    expect(similar.every((p) => p.category === "jackets")).toBe(true);
+    expect(similar.map((p) => p.id)).not.toContain(jacket.id);
+    expect(similar.every((p) => hasStock(p))).toBe(true);
   });
 });

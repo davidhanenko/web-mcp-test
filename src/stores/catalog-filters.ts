@@ -1,12 +1,12 @@
 "use client";
 
 import { create } from "zustand";
-import { getAllProducts } from "@/lib/catalog";
+import { getAllProducts, type Sort } from "@/lib/catalog";
 import type { Category, Size } from "@/lib/types";
 
 export const PRICE_MIN = 10;
 export const PRICE_STEP = 10;
-/** The highest product price, rounded up to a whole step so the slider can reach it. */
+// Rounded up to a whole step so the slider can reach it.
 export const PRICE_MAX =
   Math.ceil(
     Math.max(PRICE_MIN, ...getAllProducts().map((product) => product.price)) / PRICE_STEP,
@@ -17,6 +17,8 @@ type SearchFilters = {
   category?: Category | null;
   maxPrice?: number | null;
   size?: Size | null;
+  sort?: Sort | null;
+  page?: number | null;
 };
 
 type CatalogFiltersState = {
@@ -25,11 +27,16 @@ type CatalogFiltersState = {
   maxPrice: number;
   size: Size | "";
   inStockOnly: boolean;
+  sort: Sort;
+  // From 1. Filter and sort setters reset it to 1.
+  page: number;
   setQuery: (query: string) => void;
   setCategory: (category: Category | "") => void;
   setMaxPrice: (maxPrice: number) => void;
   setSize: (size: Size | "") => void;
   setInStockOnly: (inStockOnly: boolean) => void;
+  setSort: (sort: Sort) => void;
+  setPage: (page: number) => void;
   clearAll: () => void;
   applyFromSearch: (input: SearchFilters) => void;
 };
@@ -40,15 +47,19 @@ const defaults = {
   maxPrice: PRICE_MAX,
   size: "" as const,
   inStockOnly: false,
+  sort: "featured" as Sort,
+  page: 1,
 };
 
 export const useCatalogFilters = create<CatalogFiltersState>((set) => ({
   ...defaults,
-  setQuery: (query) => set({ query }),
-  setCategory: (category) => set({ category }),
-  setMaxPrice: (maxPrice) => set({ maxPrice }),
-  setSize: (size) => set({ size }),
-  setInStockOnly: (inStockOnly) => set({ inStockOnly }),
+  setQuery: (query) => set({ query, page: 1 }),
+  setCategory: (category) => set({ category, page: 1 }),
+  setMaxPrice: (maxPrice) => set({ maxPrice, page: 1 }),
+  setSize: (size) => set({ size, page: 1 }),
+  setInStockOnly: (inStockOnly) => set({ inStockOnly, page: 1 }),
+  setSort: (sort) => set({ sort, page: 1 }),
+  setPage: (page) => set({ page }),
   clearAll: () => set(defaults),
   applyFromSearch: (input) =>
     set({
@@ -57,5 +68,7 @@ export const useCatalogFilters = create<CatalogFiltersState>((set) => ({
       maxPrice: typeof input.maxPrice === "number" ? input.maxPrice : PRICE_MAX,
       size: input.size || "",
       inStockOnly: false,
+      sort: input.sort || "featured",
+      page: typeof input.page === "number" ? input.page : 1,
     }),
 }));

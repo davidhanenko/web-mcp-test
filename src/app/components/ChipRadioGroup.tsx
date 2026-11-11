@@ -6,9 +6,9 @@ export type ChipOption<T extends string> = {
   value: T;
   label: string;
   disabled?: boolean;
-  /** Extra text for screen readers, e.g. "(sold out)". */
+  // Extra text for screen readers, e.g. "(sold out)".
   srSuffix?: string;
-  /** CSS color for a swatch dot shown before the label. */
+  // CSS color for a dot before the label.
   swatch?: string;
 };
 
@@ -18,11 +18,12 @@ type Props<T extends string> = {
   options: ChipOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  /** Shown on the right of the legend row, outside the accessible name. */
+  // Right of the legend row, outside the accessible name.
   aside?: ReactNode;
-  /** Show a check mark inside the selected chip. */
   showCheck?: boolean;
   size?: "md" | "lg";
+  // Color dots with no text; the name stays in the tooltip and accessible name.
+  swatchOnly?: boolean;
 };
 
 export function ChipRadioGroup<T extends string>({
@@ -34,6 +35,7 @@ export function ChipRadioGroup<T extends string>({
   aside,
   showCheck = false,
   size = "md",
+  swatchOnly = false,
 }: Props<T>) {
   const chipSize =
     size === "lg" ? "h-12 min-w-16 px-5 text-base" : "h-11 min-w-12 px-4 text-[0.95rem]";
@@ -50,7 +52,10 @@ export function ChipRadioGroup<T extends string>({
           return (
             <label
               key={option.value}
-              className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${chipSize} ${
+              title={swatchOnly ? option.label : undefined}
+              className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
+                swatchOnly ? "h-10 w-10 p-0" : chipSize
+              } ${
                 option.disabled
                   ? "cursor-not-allowed border-dashed border-line bg-panel text-slate-400 line-through"
                   : selected
@@ -68,8 +73,14 @@ export function ChipRadioGroup<T extends string>({
                 className="sr-only"
               />
               {showCheck && selected ? <CheckIcon width={14} height={14} /> : null}
-              {option.swatch ? <ColorSwatch hex={option.swatch} size={16} /> : null}
-              {option.label}
+              {option.swatch ? (
+                <ColorSwatch hex={option.swatch} size={swatchOnly ? 24 : 16} />
+              ) : null}
+              {swatchOnly ? (
+                <span className="sr-only">{option.label}</span>
+              ) : (
+                option.label
+              )}
               {option.srSuffix ? <span className="sr-only"> {option.srSuffix}</span> : null}
             </label>
           );

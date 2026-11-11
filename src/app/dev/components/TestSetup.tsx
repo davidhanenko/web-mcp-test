@@ -2,6 +2,7 @@
 
 import { ChipRadioGroup } from "@/app/components/ChipRadioGroup";
 import { useCart } from "@/stores/cart";
+import { resetPopups } from "@/stores/marketing";
 import {
   saveToolsMode,
   TOOLS_MODES,
@@ -38,7 +39,7 @@ function emptyCart() {
 function loadTaskBCart() {
   const { clearCart, addToCart } = useCart.getState();
   clearCart();
-  addToCart("ridge-hiker-boots", "M", "black", 1);
+  addToCart("ridge-hiker-boots", "10", "black", 1);
   addToCart("sun-trail-shirt", "M", "sand", 1);
 }
 
@@ -93,6 +94,13 @@ export function TestSetup() {
             Load task B cart
           </button>
         </div>
+      </section>
+
+      <section>
+        <h2 className="label-caps mb-3">Popups</h2>
+        <button type="button" className={buttonClass} onClick={resetPopups}>
+          Reset popups
+        </button>
       </section>
     </div>
   );

@@ -2,17 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/app/components/Badge";
 import { ColorTag } from "@/app/components/ColorTag";
-import { hasStock } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
-export function isSoldOut(product: Product): boolean {
-  return !hasStock(product);
-}
-
 export function ProductCard({ product }: { product: Product }) {
   const waterproof = product.tags.includes("waterproof");
-  const soldOut = isSoldOut(product);
 
   return (
     <article>
@@ -25,10 +19,9 @@ export function ProductCard({ product }: { product: Product }) {
             height={600}
             className="h-full w-full object-cover transition duration-200 group-hover:brightness-95"
           />
-          {waterproof || soldOut ? (
-            <div className="absolute top-3 left-3 flex gap-1.5">
-              {waterproof ? <Badge tone="dark">Waterproof</Badge> : null}
-              {soldOut ? <Badge tone="white">Sold out</Badge> : null}
+          {waterproof ? (
+            <div className="absolute top-3 left-3">
+              <Badge tone="dark">Waterproof</Badge>
             </div>
           ) : null}
           <ColorTag color={product.colors[0]} />

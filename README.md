@@ -17,16 +17,19 @@ WebMCP is a proposed web standard from Chrome. A page registers **tools** (a nam
 
 | Tool | Type | What it does | What the customer sees |
 |---|---|---|---|
-| `search_products` | read | Search by text, category, max price, size. Up to 10 results | The shop page with the same filters |
-| `get_product` | read | Description and stock for every color and size | Nothing |
-| `get_cart` | read | Items, quantities, prices, total | Nothing |
-| `add_to_cart` | write | Add one product in one size and color | The cart drawer opens |
-| `remove_from_cart` | write | Remove an item | The cart updates |
-| `set_quantity` | write | Change an item's quantity | The cart updates |
-| `open_checkout` | write | Open checkout and return the cart | The checkout page |
+| `search_products` | read | Search by text, category, max price, size (XS–XL or US 8–12), with the shop's sort. One page of 6 products, plus the page count | The shop page with the same filters, sort and page |
+| `get_product` | read | Description, price, fit, rating, and stock for every color and size. With a size: the colors and 3 similar products in stock in it. The promo price, if any | The product page |
+| `get_product_details` | read | Specs, reviews and the size chart | Nothing |
+| `get_offers` | read | The running promo codes, with list price and price with the code | Nothing |
+| `get_cart` | read | Items, quantities, prices, list total, applied code, discount, total to pay | Nothing |
+| `update_cart` | write | Set the final quantity of 1–10 items in one call; 0 removes. Safe to repeat. All or nothing | The cart drawer opens when something is added |
+| `apply_promo_code` | write | Apply or remove a promo code | Checkout shows the discount |
+| `open_checkout` | write | Open checkout and return the cart, with the handoff to the customer | The checkout page |
 | `contact_support` | form | Fill in the support form (declarative API) | The filled form |
 
-There is no `place_order` tool, and the support form has no `toolautosubmit`, so the tools stop before the final click. An agent can still click **Place order** or **Send** on the page itself. See the results.
+There is no `place_order` tool, and the support form has no `toolautosubmit`, so the tools stop before the final click. The checkout page asks for contact, address and card details and checks them, and **Pay now** runs a mock payment that charges nothing. `open_checkout` tells the agent to stop there and hand off to the person. An agent can still click **Send** on the support form. See the results.
+
+The `complex-storefront` branch makes the store harder to shop through the page alone (6 products per page, late-loading stock, a cookie bar, an email-gated sale popup and more), and its tools are rebuilt to match that store. The tools on `main` are the earlier set. See [docs/complex-store.md](docs/complex-store.md).
 
 ## Run it locally
 
@@ -85,6 +88,8 @@ Settings are saved in the browser's localStorage, and changing one reloads the p
 
 ## Results
 
+These runs used the earlier tool set on `main`, on the simple store.
+
 Times are the agent's working time ("Worked for" in the ChatGPT app) until it finished or asked a question. Time after my reply is shown after the `+`.
 
 ### Prompt 1: trip kit (6 runs)
@@ -132,7 +137,8 @@ One agent (the ChatGPT desktop app), one small store, 1–4 runs per prompt and 
 
 | Path | What it is |
 |---|---|
-| [src/webmcp/tools.ts](src/webmcp/tools.ts) | The 7 imperative tools: definitions, input checks, results |
+| [src/webmcp/tools/](src/webmcp/tools/) | The 8 imperative tools, one file each, and their tests |
+| [src/webmcp/input.ts](src/webmcp/input.ts), [src/webmcp/results.ts](src/webmcp/results.ts) | Shared input checks and result shapes |
 | [src/app/components/WebMcpTools.tsx](src/app/components/WebMcpTools.tsx) | Registers the tools on every page, all or none |
 | [src/app/support/components/SupportForm.tsx](src/app/support/components/SupportForm.tsx) | `contact_support`, a form that is also a tool |
 | [src/webmcp/webmcp.d.ts](src/webmcp/webmcp.d.ts) | TypeScript types for WebMCP |

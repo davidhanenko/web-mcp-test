@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-/** Whether the cart drawer is open. Kept apart from useCart because it isn't saved. */
+// Kept apart from useCart because it isn't saved.
 type CartDrawerState = {
   isOpen: boolean;
   open: () => void;

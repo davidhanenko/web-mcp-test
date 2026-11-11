@@ -1,4 +1,4 @@
-/** A small color dot. Decorative: always show the color's name as text next to it. */
+// Decorative: always show the color's name as text next to it.
 export function ColorSwatch({
   hex,
   size = 12,

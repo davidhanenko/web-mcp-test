@@ -1,6 +1,5 @@
 import type { ProductColor } from '@/lib/types';
 
-/** Black or white, whichever reads better on `hex`. */
 function readableTextColor(hex: string): string {
   const value = parseInt(hex.slice(1), 16);
   const [r, g, b] = [

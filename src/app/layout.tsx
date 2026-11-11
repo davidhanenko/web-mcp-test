@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
 import { CartDrawer } from "@/app/components/CartDrawer";
+import { CookieBar } from "@/app/components/CookieBar";
 import { SavedCartLoader } from "@/app/components/SavedCartLoader";
 import { Footer } from "@/app/components/Footer";
 import { Header } from "@/app/components/Header";
+import { PromoModal } from "@/app/components/PromoModal";
+import { PromoStrip } from "@/app/components/PromoStrip";
 import { ToastRegion } from "@/app/components/ToastRegion";
 import { WebMcpTools } from "@/app/components/WebMcpTools";
 import "./globals.css";
@@ -32,11 +35,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col font-sans">
         <SavedCartLoader />
         <Header />
+        <PromoStrip />
         <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 lg:px-8">
           {children}
         </main>
         <Footer />
         <CartDrawer />
+        <CookieBar />
+        <PromoModal />
         <ToastRegion />
         <WebMcpTools />
       </body>

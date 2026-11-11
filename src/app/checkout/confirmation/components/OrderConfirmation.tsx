@@ -2,6 +2,7 @@
 
 import { CenteredMessage } from "@/app/checkout/components/CenteredMessage";
 import { formatPrice } from "@/lib/format";
+import { PROMO_CODE } from "@/lib/promo";
 import { useOrder } from "@/stores/order";
 
 export function OrderConfirmation() {
@@ -41,12 +42,29 @@ export function OrderConfirmation() {
           </li>
         ))}
       </ul>
-      <p className="mt-4 flex w-full items-baseline justify-between text-lg">
-        <span className="font-semibold">Total</span>
-        <span className="font-extrabold">
-          {formatPrice(lastOrder.total, { cents: true })}
-        </span>
-      </p>
+      {lastOrder.discount > 0 ? (
+        <div className="mt-4 w-full space-y-2 text-lg">
+          <p className="flex items-baseline justify-between">
+            <span>Subtotal</span>
+            <span>{formatPrice(lastOrder.total, { cents: true })}</span>
+          </p>
+          <p className="flex items-baseline justify-between">
+            <span>Promo {PROMO_CODE}</span>
+            <span>−{formatPrice(lastOrder.discount, { cents: true })}</span>
+          </p>
+          <p className="flex items-baseline justify-between font-extrabold">
+            <span>Pay total</span>
+            <span>{formatPrice(lastOrder.payTotal, { cents: true })}</span>
+          </p>
+        </div>
+      ) : (
+        <p className="mt-4 flex w-full items-baseline justify-between text-lg">
+          <span className="font-semibold">Total</span>
+          <span className="font-extrabold">
+            {formatPrice(lastOrder.total, { cents: true })}
+          </span>
+        </p>
+      )}
     </CenteredMessage>
   );
 }

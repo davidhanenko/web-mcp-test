@@ -1,14 +1,16 @@
 import { getColor, getProduct, getStock } from "@/lib/catalog";
 import type { CartDetails, CartItem, Size } from "@/lib/types";
-import { SIZES } from "@/lib/types";
+import { SHOE_SIZES, SIZES } from "@/lib/types";
 
-/** Cart business rules. Plain functions with no React or store code, so they run anywhere. */
+// Cart business rules. Plain functions with no React or store code, so they run anywhere.
 
 function isSize(value: string): value is Size {
-  return (SIZES as readonly string[]).includes(value);
+  return (
+    (SIZES as readonly string[]).includes(value) ||
+    (SHOE_SIZES as readonly string[]).includes(value)
+  );
 }
 
-/** Throws unless `quantity` is a whole number ≥ 1 (or ≥ 0 when `allowZero`). */
 export function assertValidQuantity(
   quantity: number,
   { allowZero = false } = {},
@@ -24,10 +26,7 @@ export function assertProductExists(productId: string): void {
   }
 }
 
-/**
- * Throws unless the shopper can have `quantity` units of the product in `size`
- * and `color`: the product exists, comes in that size and color, and has that many in stock.
- */
+// The product exists, has that size and color, and has that many in stock.
 export function assertAvailable(
   productId: string,
   size: string,
@@ -76,17 +75,13 @@ export function findCartItem(
   );
 }
 
-/** Number of units across all items, e.g. 2 jackets + 1 socks = 3. */
 export function getTotalQuantity(
   items: readonly Pick<CartItem, "quantity">[],
 ): number {
   return items.reduce((sum, item) => sum + item.quantity, 0);
 }
 
-/**
- * Joins the stored cart items with the catalog to get names, images, prices,
- * subtotals and the cart total. Prices always come from the catalog, never from storage.
- */
+// Prices always come from the catalog, never from storage.
 export function getCartDetails(items: CartItem[]): CartDetails {
   const detailedItems = items.map((item) => {
     const product = getProduct(item.productId);

@@ -7,7 +7,6 @@ import { useCartDrawer } from "@/stores/cart-drawer";
 import { createTools } from "@/webmcp/tools";
 import { useToolsMode } from "@/webmcp/tools-mode";
 
-
 export function WebMcpTools() {
   const router = useRouter();
   const isSavedCartLoaded = useIsSavedCartLoaded();
@@ -18,15 +17,11 @@ export function WebMcpTools() {
     if (!modelContext || !isSavedCartLoaded) return;
     if (toolsMode === null || toolsMode === "off") return;
 
-    const showCatalog = () => {
-      useCartDrawer.getState().close();
-      router.push("/");
-    };
-    const openCheckout = () => {
-      useCartDrawer.getState().close();
-      router.push("/checkout");
-    };
-    const tools = createTools({ openCheckout, showCatalog });
+    const tools = createTools({
+      navigate: (path) => router.push(path),
+      openDrawer: () => useCartDrawer.getState().open(),
+      closeDrawer: () => useCartDrawer.getState().close(),
+    });
 
     // One signal for all tools: aborting it unregisters every one of them.
     const controller = new AbortController();

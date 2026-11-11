@@ -4,23 +4,19 @@ import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import { ColorTag } from "@/app/components/ColorTag";
 import type { Product } from "@/lib/types";
-import { AddToCartForm, getDefaultColorId } from "./AddToCartForm";
+import { AddToCartForm } from "./AddToCartForm";
 
-/**
- * Image + purchase form. They share the selected color, so the color tag on the
- * image always matches the color the shopper is about to buy.
- */
+// Image and form share the color, so the image's color tag matches what is bought.
 export function ProductView({
   product,
   children,
 }: {
   product: Product;
-  /** Server-rendered details (tags, title, price, description) shown above the form. */
+  // Server-rendered tags, title, price and description above the form.
   children: ReactNode;
 }) {
-  const [colorId, setColorId] = useState(() => getDefaultColorId(product));
-  const color =
-    product.colors.find((option) => option.id === colorId) ?? product.colors[0];
+  const [colorId, setColorId] = useState("");
+  const color = product.colors.find((option) => option.id === colorId);
 
   return (
     <article className="grid items-start gap-6 md:grid-cols-2 lg:gap-10">
@@ -32,7 +28,7 @@ export function ProductView({
           height={600}
           className="h-full w-full object-cover"
         />
-        <ColorTag color={color} />
+        {color ? <ColorTag color={color} /> : null}
       </div>
       <div className="max-w-xl">
         {children}

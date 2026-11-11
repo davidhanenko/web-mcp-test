@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SuccessMark } from "@/app/components/SuccessMark";
+import { useToolsMode } from "@/webmcp/tools-mode";
 
 const TOPICS = ["Order help", "Sizing", "Returns", "Something else"] as const;
 
@@ -10,6 +11,7 @@ const field =
 
 export function SupportForm() {
   const [submitted, setSubmitted] = useState(false);
+  const isToolOn = useToolsMode() === "adapted";
 
   // With cacheComponents, Next keeps this page hidden after the customer leaves instead of
   // unmounting it. Show the form again on return, so contact_support is available.
@@ -25,9 +27,15 @@ export function SupportForm() {
       ) : (
         // toolname makes this form a WebMCP tool. Without toolautosubmit the agent
         // only fills it in; the customer clicks Send.
+        // The key remounts the form when the tool turns on, so the browser registers it.
         <form
-          toolname="contact_support"
-          tooldescription="Write to customer support about an order, sizing or returns. Fills in the form; the customer reviews it and clicks Send."
+          key={isToolOn ? "tool" : "plain"}
+          toolname={isToolOn ? "contact_support" : undefined}
+          tooldescription={
+            isToolOn
+              ? "Write to customer support about an order, sizing, a size exchange or returns. Fills in the form; the customer reviews it and clicks Send."
+              : undefined
+          }
           className="space-y-6"
           onSubmit={(event) => {
             event.preventDefault();
@@ -77,7 +85,7 @@ export function SupportForm() {
             <select
               id="topic"
               name="topic"
-              toolparamdescription="What the message is about."
+              toolparamdescription="One of: Order help, Sizing, Returns, Something else. Sizing covers exchanges for another size."
               required
               className={`${field} h-14`}
             >
@@ -95,7 +103,7 @@ export function SupportForm() {
             <textarea
               id="message"
               name="message"
-              toolparamdescription="The customer's question, in full sentences."
+              toolparamdescription="The question in full sentences. For an exchange: the product, color, current size and the size wanted."
               required
               rows={7}
               className={`${field} py-3`}
