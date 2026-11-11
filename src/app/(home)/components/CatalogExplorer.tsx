@@ -1,17 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { ChipRadioGroup, type ChipOption } from "@/app/components/ChipRadioGroup";
 import { SearchIcon } from "@/app/components/icons";
 import { SelectField } from "@/app/components/SelectField";
 import { ProductCard } from "./ProductCard";
-import { searchProducts } from "@/lib/catalog";
+import {
+  CATALOG_PAGE_SIZE,
+  getPage,
+  getPageCount,
+  searchProducts,
+  sortProducts,
+  type Sort,
+} from "@/lib/catalog";
 import {
   CATEGORIES,
   SHOE_SIZES,
   SIZES,
   type Category,
-  type Product,
   type Size,
 } from "@/lib/types";
 import {
@@ -20,10 +26,6 @@ import {
   PRICE_STEP,
   useCatalogFilters,
 } from "@/stores/catalog-filters";
-
-const PAGE_SIZE = 6;
-
-type Sort = "featured" | "price-asc" | "price-desc" | "name";
 
 const CATEGORY_OPTIONS: ChipOption<Category | "">[] = [
   { value: "", label: "All" },
@@ -35,17 +37,6 @@ const CATEGORY_OPTIONS: ChipOption<Category | "">[] = [
 
 function sizeChoices(group: readonly Size[]): ChipOption<Size | "">[] {
   return group.map((value) => ({ value, label: value }));
-}
-
-function sortProducts(products: Product[], sort: Sort): Product[] {
-  if (sort === "featured") return products;
-  const sorted = [...products];
-  sorted.sort((a, b) => {
-    if (sort === "name") return a.name.localeCompare(b.name);
-    const byPrice = sort === "price-asc" ? a.price - b.price : b.price - a.price;
-    return byPrice || a.name.localeCompare(b.name);
-  });
-  return sorted;
 }
 
 export function CatalogExplorer({
@@ -64,9 +55,11 @@ export function CatalogExplorer({
   const setSize = useCatalogFilters((s) => s.setSize);
   const setInStockOnly = useCatalogFilters((s) => s.setInStockOnly);
   const clearAll = useCatalogFilters((s) => s.clearAll);
-
-  const [sort, setSort] = useState<Sort>("featured");
-  const [page, setPage] = useState(1);
+  // In the store, so search_products can show the same sort and page. Filter setters reset the page.
+  const sort = useCatalogFilters((s) => s.sort);
+  const page = useCatalogFilters((s) => s.page);
+  const setSort = useCatalogFilters((s) => s.setSort);
+  const setPage = useCatalogFilters((s) => s.setPage);
 
   useEffect(() => {
     if (initialCategory) setCategory(initialCategory);
@@ -76,12 +69,6 @@ export function CatalogExplorer({
   const priceText = anyPrice ? "Any price" : `$${maxPrice}`;
   const showApparel = category !== "boots";
   const showShoes = category === "" || category === "boots";
-  const filterKey = `${query}|${category}|${maxPrice}|${size}|${inStockOnly}|${sort}`;
-  const [seenKey, setSeenKey] = useState(filterKey);
-  if (seenKey !== filterKey) {
-    setSeenKey(filterKey);
-    setPage(1);
-  }
 
   const products = useMemo(
     () =>
@@ -98,15 +85,11 @@ export function CatalogExplorer({
     [query, category, maxPrice, anyPrice, size, inStockOnly, sort],
   );
 
-  const pageCount = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  const pageCount = getPageCount(products.length);
   const currentPage = Math.min(page, pageCount);
-  const visible = products.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const visible = getPage(products, currentPage);
 
   function resetFilters() {
-    setSort("featured");
     clearAll();
   }
 
@@ -235,8 +218,8 @@ export function CatalogExplorer({
               {products.length === 0
                 ? "0 products"
                 : `Showing ${
-                    (currentPage - 1) * PAGE_SIZE + 1
-                  }–${Math.min(currentPage * PAGE_SIZE, products.length)} of ${products.length}`}
+                    (currentPage - 1) * CATALOG_PAGE_SIZE + 1
+                  }–${Math.min(currentPage * CATALOG_PAGE_SIZE, products.length)} of ${products.length}`}
             </p>
           </div>
           <div className="flex w-full flex-col gap-4 sm:max-w-md sm:flex-row sm:items-end">

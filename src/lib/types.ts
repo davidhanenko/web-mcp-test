@@ -7,8 +7,11 @@ export type ApparelSize = (typeof SIZES)[number];
 export const SHOE_SIZES = ["8", "9", "10", "11", "12"] as const;
 export type ShoeSize = (typeof SHOE_SIZES)[number];
 
-// Apparel letters or boot numbers. The tool schema still lists only SIZES.
+// Apparel letters or boot numbers.
 export type Size = ApparelSize | ShoeSize;
+
+/** Every size any product comes in: apparel letters, then boot numbers. */
+export const ALL_SIZES: readonly Size[] = [...SIZES, ...SHOE_SIZES];
 
 /** One color a product comes in, with its own stock per size. */
 export type ProductColor = {

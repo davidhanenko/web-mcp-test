@@ -140,3 +140,46 @@ export function getSimilarProducts(product: Product, count: number): Product[] {
     count,
   });
 }
+
+/** Other products from the same category that are in stock in `size`, in catalog order. */
+export function getSimilarInSize(
+  product: Product,
+  size: Size,
+  count: number,
+): Product[] {
+  return products
+    .filter(
+      (other) =>
+        other.id !== product.id &&
+        other.category === product.category &&
+        hasStock(other, size),
+    )
+    .slice(0, count);
+}
+
+/** How the shop grid can be ordered. "featured" is catalog order. */
+export const SORTS = ["featured", "price-asc", "price-desc", "name"] as const;
+export type Sort = (typeof SORTS)[number];
+
+/** Products per page in the shop grid (and per search_products page). */
+export const CATALOG_PAGE_SIZE = 6;
+
+export function sortProducts(list: Product[], sort: Sort): Product[] {
+  if (sort === "featured") return list;
+  const sorted = [...list];
+  sorted.sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    const byPrice = sort === "price-asc" ? a.price - b.price : b.price - a.price;
+    return byPrice || a.name.localeCompare(b.name);
+  });
+  return sorted;
+}
+
+export function getPageCount(total: number): number {
+  return Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
+}
+
+/** One page of `list`, counting pages from 1. */
+export function getPage<T>(list: T[], page: number): T[] {
+  return list.slice((page - 1) * CATALOG_PAGE_SIZE, page * CATALOG_PAGE_SIZE);
+}

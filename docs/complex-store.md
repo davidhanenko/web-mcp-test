@@ -1,6 +1,6 @@
 # A more complex storefront
 
-The shop pages are harder to use, in the way a large store is. The catalog, the tools, and the tests are the same as before.
+The shop pages are harder to use, in the way a large store is. The catalog is the same as before. The WebMCP tools are rebuilt to match this store.
 
 ## What changed
 
@@ -20,4 +20,17 @@ On `/dev`, **Reset popups** clears the cookie choice, the closed promo modal, an
 
 ## What stayed the same
 
-Tools, tests, product ids, list prices, and the four categories are unchanged. The `open_checkout` tool still says the customer "clicks Place order", but the page button is now Pay now. Checkout is out of scope for agents: they stop on the checkout page and do not enter an address or a card. The tool size list is still XS–XL, so a tool cannot pick a shoe size. The page can. `getCart()` still returns list prices. An agent using the tools still gets full stock for every color and size without selecting a size, and still sees the Ember Down Jacket at $199. An agent using only the page has to page through the grid, close the cookie bar and the sale popup, pick a color, wait for stock, and pick a size to learn what is in stock. With `RIDGE30`, the Ember Down Jacket is $169 at checkout. The Granite Insulated Jacket stays $175. The page does not say that comparison out loud.
+Product ids, list prices, and the four categories are unchanged. `getCart()` still returns list prices. Checkout is out of scope for agents: they stop on the checkout page and do not enter an address or a card.
+
+## The tools
+
+The tools are rebuilt for this store. They cover what the page has: boot sizes 8–12, the shop's sort and 6-product pages, fit, rating, reviews, specs and the size chart, the colors and similar products in stock in a size, and the promo.
+
+- `search_products` returns one page of 6, sorted like the shop, and shows the same filters, sort and page on the shop page.
+- `get_product` returns stock for every color and size at once, with no wait and no size to pick first. With a size, it also lists the colors and 3 similar products in stock in that size. It opens the product page.
+- `get_offers` returns `RIDGE30` and the $169 price without the popup's email. `get_product` shows the same price on the Ember Down Jacket, so a tool agent can see that it beats the Granite Insulated Jacket at $175. `apply_promo_code` applies the code, and checkout opens with it.
+- `get_cart` and `open_checkout` return the list total, the discount and the total to pay.
+- `update_cart` replaces add, remove and set quantity. It sets final quantities, so calling it again changes nothing, and it changes nothing if any item fails.
+- `open_checkout` tells the agent to stop and hand the page to the person, who clicks Pay now.
+
+The tools don't touch the cookie bar or the sale popup. An agent using the tools does not need to close them, so the popup can stay open over the page while the agent works. An agent using only the page has to page through the grid, close the cookie bar and the sale popup, pick a color, wait for stock, and pick a size to learn what is in stock.
