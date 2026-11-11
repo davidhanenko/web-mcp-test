@@ -7,6 +7,7 @@ import { QuantityStepper } from "@/app/components/QuantityStepper";
 import { useStockLoad } from "@/hooks/useStockLoad";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
+import { useToast } from "@/stores/toast";
 import { getStock, hasStock } from "@/lib/catalog";
 import type { Product, Size } from "@/lib/types";
 import { SizeChartButton } from "./SizeChartButton";
@@ -44,6 +45,7 @@ export function AddToCartForm({
   const [result, setResult] = useState<Result>(null);
   const addToCart = useCart((s) => s.addToCart);
   const openCart = useCartDrawer((s) => s.open);
+  const showToast = useToast((s) => s.show);
 
   const loading = useStockLoad(colorId);
   const stock = color && size ? getStock(product, color.id, size) : 0;
@@ -83,6 +85,7 @@ export function AddToCartForm({
     try {
       addToCart(product.id, size, color.id, quantity);
       setResult({ kind: "added", size, colorName: color.name });
+      showToast(`Added ${product.name} (${color.name}, ${size}) to your cart.`);
     } catch (error) {
       setResult({
         kind: "error",

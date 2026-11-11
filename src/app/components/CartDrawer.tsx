@@ -11,6 +11,7 @@ import { ColorSwatch } from "@/app/components/ColorSwatch";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
+import { useToast } from "@/stores/toast";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -21,6 +22,7 @@ export function CartDrawer() {
   const { items, total, totalQuantity } = useCartDetails();
   const removeFromCart = useCart((s) => s.removeFromCart);
   const setQuantity = useCart((s) => s.setQuantity);
+  const showToast = useToast((s) => s.show);
   const [error, setError] = useState<string | null>(null);
 
   const panelRef = useRef<HTMLElement>(null);
@@ -166,7 +168,10 @@ export function CartDrawer() {
                       <button
                         type="button"
                         className="text-sm text-muted underline underline-offset-2 hover:text-ink"
-                        onClick={() => removeFromCart(item.productId, item.size, item.color)}
+                        onClick={() => {
+                          removeFromCart(item.productId, item.size, item.color);
+                          showToast(`Removed ${item.name} from your cart.`);
+                        }}
                       >
                         Remove<span className="sr-only"> {item.name}</span>
                       </button>

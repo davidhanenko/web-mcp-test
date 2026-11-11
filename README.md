@@ -26,7 +26,7 @@ WebMCP is a proposed web standard from Chrome. A page registers **tools** (a nam
 | `open_checkout` | write | Open checkout and return the cart | The checkout page |
 | `contact_support` | form | Fill in the support form (declarative API) | The filled form |
 
-There is no `place_order` tool, and the support form has no `toolautosubmit`, so the tools stop before the final click. On the `complex-storefront` branch, the checkout page asks for contact, address and card details and its **Pay now** button does nothing, so an agent is meant to stop there and hand off to the person. An agent can still click **Send** on the support form. See the results.
+There is no `place_order` tool, and the support form has no `toolautosubmit`, so the tools stop before the final click. On the `complex-storefront` branch, the checkout page asks for contact, address and card details and checks them, and **Pay now** runs a mock payment that charges nothing. An agent is meant to stop on that page and hand off to the person. An agent can still click **Send** on the support form. See the results.
 
 The `complex-storefront` branch also makes the store harder to shop through the page alone (6 products per page, late-loading stock, a cookie bar, an email-gated sale popup and more), while the tools behave the same. See [docs/complex-store.md](docs/complex-store.md).
 

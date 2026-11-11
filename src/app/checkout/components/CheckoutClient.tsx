@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
+  useEffect,
   useLayoutEffect,
+  useRef,
   useState,
   type FormEvent,
   type InputHTMLAttributes,
@@ -21,14 +24,90 @@ import {
 import { useAgentCartChanges } from "@/stores/agent-cart-changes";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { saveAppliedCode, useMarketing } from "@/stores/marketing";
+import { useOrder } from "@/stores/order";
+
+type Errors = Record<string, string>;
+
+const REQUIRED: Record<string, string> = {
+  email: "Enter your email.",
+  "first-name": "Enter your first name.",
+  "last-name": "Enter your last name.",
+  address: "Enter your address.",
+  city: "Enter your city.",
+  state: "Enter your state.",
+  zip: "Enter your ZIP code.",
+  phone: "Enter your phone number.",
+  "card-number": "Enter your card number.",
+  "card-expiry": "Enter the expiration date.",
+  "card-cvc": "Enter the security code.",
+  "card-name": "Enter the name on the card.",
+};
+
+function luhn(digits: string): boolean {
+  let sum = 0;
+  for (let i = 0; i < digits.length; i++) {
+    let n = Number(digits[digits.length - 1 - i]);
+    if (i % 2 === 1) {
+      n *= 2;
+      if (n > 9) n -= 9;
+    }
+    sum += n;
+  }
+  return sum % 10 === 0;
+}
+
+// Basic checks only. Nothing here is sent anywhere.
+function validate(data: FormData): Errors {
+  const value = (name: string) => String(data.get(name) ?? "").trim();
+  const errors: Errors = {};
+  for (const name of Object.keys(REQUIRED)) {
+    if (!value(name)) errors[name] = REQUIRED[name];
+  }
+
+  if (!errors.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value("email"))) {
+    errors.email = "Enter a valid email address.";
+  }
+  if (!errors.zip && !/^\d{5}(-\d{4})?$/.test(value("zip"))) {
+    errors.zip = "Enter a 5-digit ZIP code.";
+  }
+  if (!errors.phone && value("phone").replace(/\D/g, "").length < 10) {
+    errors.phone = "Enter a 10-digit phone number.";
+  }
+  if (!errors["card-number"]) {
+    const digits = value("card-number").replace(/[\s-]/g, "");
+    if (!/^\d{13,19}$/.test(digits) || !luhn(digits)) {
+      errors["card-number"] = "Enter a valid card number.";
+    }
+  }
+  if (!errors["card-expiry"]) {
+    const match = value("card-expiry").match(/^(\d{2})\s*\/?\s*(\d{2})$/);
+    const month = match ? Number(match[1]) : 0;
+    const year = match ? 2000 + Number(match[2]) : 0;
+    const now = new Date();
+    const expired =
+      year < now.getFullYear() ||
+      (year === now.getFullYear() && month < now.getMonth() + 1);
+    if (!match || month < 1 || month > 12) {
+      errors["card-expiry"] = "Use the format MM / YY.";
+    } else if (expired) {
+      errors["card-expiry"] = "This card has expired.";
+    }
+  }
+  if (!errors["card-cvc"] && !/^\d{3,4}$/.test(value("card-cvc"))) {
+    errors["card-cvc"] = "Enter the 3 or 4 digit code.";
+  }
+  return errors;
+}
 
 function Field({
   label,
   name,
+  error,
   ...props
 }: {
   label: string;
   name: string;
+  error?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "name" | "id">) {
   const id = `checkout-${name}`;
   return (
@@ -39,9 +118,16 @@ function Field({
       <input
         id={id}
         name={name}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
         {...props}
-        className="h-12 w-full rounded-md border border-line bg-white px-3 placeholder:text-muted"
+        className={`h-12 w-full rounded-md border bg-white px-3 placeholder:text-muted ${error ? "border-red-600" : "border-line"}`}
       />
+      {error ? (
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -59,11 +145,16 @@ function StepNumber({ n }: { n: number }) {
 
 export function CheckoutClient() {
   const { items, total, totalQuantity } = useCartDetails();
+  const router = useRouter();
   const openCart = useCartDrawer((s) => s.open);
   const isSavedCartLoaded = useIsSavedCartLoaded();
   const marketing = useMarketing();
   const [codeDraft, setCodeDraft] = useState<string | null>(null);
   const [codeError, setCodeError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Errors>({});
+  const [isPaying, setIsPaying] = useState(false);
+  const [isPlaced, setIsPlaced] = useState(false);
+  const payTimer = useRef<number | undefined>(undefined);
   const codeValue = codeDraft ?? (marketing.ready ? marketing.appliedCode : "");
   const discount = promoDiscount(items, marketing.appliedCode);
   const due = payTotal(total, discount);
@@ -89,6 +180,34 @@ export function CheckoutClient() {
     setCodeError(null);
   }
 
+  function pay(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isPaying) return;
+    const form = event.currentTarget;
+    const found = validate(new FormData(form));
+    setErrors(found);
+    const first = Object.keys(found)[0];
+    if (first) {
+      form.querySelector<HTMLInputElement>(`[name="${first}"]`)?.focus();
+      return;
+    }
+    // Mock: nothing is charged and the card details are not kept. After a short wait the
+    // cart becomes an order, the same way the old Place order button worked.
+    setIsPaying(true);
+    payTimer.current = window.setTimeout(() => {
+      setIsPlaced(true);
+      const result = useOrder.getState().placeOrder();
+      if (result && "error" in result) {
+        setIsPlaced(false);
+        setIsPaying(false);
+        return;
+      }
+      router.replace("/checkout/confirmation");
+    }, 1800);
+  }
+
+  useEffect(() => () => window.clearTimeout(payTimer.current), []);
+
   // Changes the agent made before this page opened are already in what the customer sees.
   // Only changes made while the customer is reviewing need a notice.
   const cartChangedByAgent = useAgentCartChanges((s) => s.count > s.countAtCheckoutOpen);
@@ -100,7 +219,7 @@ export function CheckoutClient() {
     useAgentCartChanges.getState().markCheckoutOpened();
   }, []);
 
-  if (!isSavedCartLoaded) {
+  if (!isSavedCartLoaded || isPlaced) {
     // Reserve the page height until the saved cart is read, avoiding a flash of the empty state.
     return (
       <div className="min-h-[480px]">
@@ -125,16 +244,15 @@ export function CheckoutClient() {
         <form
           id="payment-form"
           aria-label="Checkout"
-          // Not functional: nothing is sent and no order is placed. This is where a
-          // person takes over, so the page asks for what a real store would.
-          onSubmit={(event) => event.preventDefault()}
+          noValidate
+          onSubmit={pay}
           className="space-y-10"
         >
           <fieldset className="space-y-4">
             <legend className="mb-4 flex items-center gap-3 text-xl font-bold">
               <StepNumber n={1} /> Contact
             </legend>
-            <Field label="Email" name="email" type="email" autoComplete="email" />
+            <Field label="Email" name="email" error={errors["email"]} type="email" autoComplete="email" />
           </fieldset>
 
           <fieldset className="space-y-4">
@@ -142,21 +260,21 @@ export function CheckoutClient() {
               <StepNumber n={2} /> Shipping address
             </legend>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="First name" name="first-name" autoComplete="given-name" />
-              <Field label="Last name" name="last-name" autoComplete="family-name" />
+              <Field label="First name" name="first-name" error={errors["first-name"]} autoComplete="given-name" />
+              <Field label="Last name" name="last-name" error={errors["last-name"]} autoComplete="family-name" />
             </div>
-            <Field label="Address" name="address" autoComplete="address-line1" />
+            <Field label="Address" name="address" error={errors["address"]} autoComplete="address-line1" />
             <Field
               label="Apartment, suite, etc. (optional)"
               name="address2"
               autoComplete="address-line2"
             />
             <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="City" name="city" autoComplete="address-level2" />
-              <Field label="State" name="state" autoComplete="address-level1" />
-              <Field label="ZIP code" name="zip" autoComplete="postal-code" />
+              <Field label="City" name="city" error={errors["city"]} autoComplete="address-level2" />
+              <Field label="State" name="state" error={errors["state"]} autoComplete="address-level1" />
+              <Field label="ZIP code" name="zip" error={errors["zip"]} autoComplete="postal-code" />
             </div>
-            <Field label="Phone" name="phone" type="tel" autoComplete="tel" />
+            <Field label="Phone" name="phone" error={errors["phone"]} type="tel" autoComplete="tel" />
           </fieldset>
 
           <fieldset className="space-y-4">
@@ -185,7 +303,7 @@ export function CheckoutClient() {
             </legend>
             <Field
               label="Card number"
-              name="card-number"
+              name="card-number" error={errors["card-number"]}
               inputMode="numeric"
               autoComplete="cc-number"
               placeholder="1234 1234 1234 1234"
@@ -193,18 +311,18 @@ export function CheckoutClient() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 label="Expiration (MM / YY)"
-                name="card-expiry"
+                name="card-expiry" error={errors["card-expiry"]}
                 autoComplete="cc-exp"
                 placeholder="MM / YY"
               />
               <Field
                 label="Security code"
-                name="card-cvc"
+                name="card-cvc" error={errors["card-cvc"]}
                 inputMode="numeric"
                 autoComplete="cc-csc"
               />
             </div>
-            <Field label="Name on card" name="card-name" autoComplete="cc-name" />
+            <Field label="Name on card" name="card-name" error={errors["card-name"]} autoComplete="cc-name" />
             <label className="flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
@@ -218,12 +336,17 @@ export function CheckoutClient() {
 
           <div>
             <button
-              // Does nothing for now: payment is not connected.
               type="submit"
-              className="h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover sm:w-auto sm:px-12"
+              disabled={isPaying}
+              className="h-14 w-full rounded-md bg-accent text-lg font-bold text-ink hover:bg-accent-hover disabled:opacity-60 sm:w-auto sm:px-12"
             >
-              Pay now
+              {isPaying ? "Processing payment…" : "Pay now"}
             </button>
+            {Object.keys(errors).length > 0 ? (
+              <p role="alert" className="mt-3 text-sm font-semibold text-red-700">
+                Check the highlighted fields and try again.
+              </p>
+            ) : null}
             <p className="mt-3 text-sm text-muted">
               By paying, you agree to the Northline Supply terms of sale.
             </p>
