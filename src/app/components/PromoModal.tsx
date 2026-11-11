@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { dismissPromo, useMarketing } from "@/stores/marketing";
 import { PROMO_CODE } from "@/lib/promo";
@@ -9,6 +9,10 @@ export function PromoModal() {
   const { ready, promoDismissed } = useMarketing();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
+  // The email only unlocks the code on screen. It is never stored or sent.
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [revealed, setRevealed] = useState(false);
   const open = visible && ready && !promoDismissed;
 
   useEffect(() => {
@@ -39,6 +43,16 @@ export function PromoModal() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  function onSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setEmailError("Enter a valid email address.");
+      return;
+    }
+    setEmailError(null);
+    setRevealed(true);
+  }
+
   if (!open) return null;
 
   return (
@@ -54,29 +68,79 @@ export function PromoModal() {
           $30 off the Ember Down Jacket
         </h2>
         <p className="mt-4 text-base leading-7">
-          800-fill down for cold camps. Use code {PROMO_CODE} at checkout.
+          800-fill down for cold camps.{" "}
+          {revealed
+            ? `Use code ${PROMO_CODE} at checkout.`
+            : "Join our list and we will show you the code."}
         </p>
         <p className="mt-3 text-lg">
           <span className="text-muted line-through">$199</span>{" "}
           <span className="font-bold">$169</span>
         </p>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/products/ember-down-jacket"
-            onClick={dismissPromo}
-            className="flex h-12 flex-1 items-center justify-center rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover"
-          >
-            Shop the jacket
-          </Link>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={dismissPromo}
-            className="h-12 flex-1 rounded-md border border-line bg-white text-base font-semibold hover:bg-panel"
-          >
-            No thanks
-          </button>
-        </div>
+        {revealed ? (
+          <>
+            <p
+              role="status"
+              className="mt-4 rounded-md bg-panel px-4 py-3 text-center text-2xl font-extrabold tracking-[0.12em]"
+            >
+              {PROMO_CODE}
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/products/ember-down-jacket"
+                onClick={dismissPromo}
+                className="flex h-12 flex-1 items-center justify-center rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover"
+              >
+                Shop the jacket
+              </Link>
+              <button
+                ref={closeRef}
+                type="button"
+                onClick={dismissPromo}
+                className="h-12 flex-1 rounded-md border border-line bg-white text-base font-semibold hover:bg-panel"
+              >
+                Close
+              </button>
+            </div>
+          </>
+        ) : (
+          <form onSubmit={onSubmit} noValidate className="mt-6">
+            <label htmlFor="promo-email" className="label-caps mb-2 block">
+              Email
+            </label>
+            <input
+              id="promo-email"
+              type="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setEmailError(null);
+              }}
+              autoComplete="off"
+              placeholder="you@example.com"
+              className="h-12 w-full rounded-md border border-line bg-white px-3 placeholder:text-muted"
+            />
+            <p role="status" className="mt-2 min-h-6 text-sm text-red-700">
+              {emailError}
+            </p>
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                className="h-12 flex-1 rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover"
+              >
+                Get my code
+              </button>
+              <button
+                ref={closeRef}
+                type="button"
+                onClick={dismissPromo}
+                className="h-12 flex-1 rounded-md border border-line bg-white text-base font-semibold hover:bg-panel"
+              >
+                No thanks
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

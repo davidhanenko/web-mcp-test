@@ -1,5 +1,11 @@
 import productsData from "@/data/products.json";
-import type { Product, ProductColor, SearchFilters, Size } from "@/lib/types";
+import type {
+  Category,
+  Product,
+  ProductColor,
+  SearchFilters,
+  Size,
+} from "@/lib/types";
 
 const products = productsData as Product[];
 
@@ -104,4 +110,44 @@ export function searchProducts(filters: SearchFilters = {}): Product[] {
 
     return true;
   });
+}
+
+/** In-stock products from `categories`, in catalog order, skipping `excludeIds`. */
+export function getSuggestedProducts({
+  categories,
+  excludeIds = [],
+  count,
+}: {
+  categories: Category[];
+  excludeIds?: string[];
+  count: number;
+}): Product[] {
+  return products
+    .filter(
+      (product) =>
+        categories.includes(product.category) &&
+        !excludeIds.includes(product.id) &&
+        hasStock(product),
+    )
+    .slice(0, count);
+}
+
+/** Other in-stock products from the same category. */
+export function getSimilarProducts(product: Product, count: number): Product[] {
+  return getSuggestedProducts({
+    categories: [product.category],
+    excludeIds: [product.id],
+    count,
+  });
+}
+
+/** The first color and size, in catalog order, that has stock. */
+export function firstAvailableVariant(
+  product: Product,
+): { colorId: string; size: Size } | undefined {
+  for (const color of product.colors) {
+    const size = product.sizes.find((value) => (color.stock[value] ?? 0) > 0);
+    if (size) return { colorId: color.id, size };
+  }
+  return undefined;
 }

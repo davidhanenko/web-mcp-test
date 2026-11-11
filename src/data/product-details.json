@@ -1,0 +1,1052 @@
+{
+  "mist-trail-jacket": {
+    "fit": "true to size",
+    "rating": 4.5,
+    "reviewCount": 212,
+    "specs": [
+      {
+        "label": "Shell",
+        "value": "2.5-layer waterproof nylon"
+      },
+      {
+        "label": "Weight",
+        "value": "10.4 oz"
+      },
+      {
+        "label": "Seams",
+        "value": "Fully taped"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Dana R.",
+        "title": "Kept me dry on the ridge",
+        "text": "Light enough that I forgot it was in the pack. Seams held through two wet days."
+      },
+      {
+        "author": "Marcus T.",
+        "title": "Good value shell",
+        "text": "Hood fits over a helmet. Wrist cuffs are a little loose."
+      }
+    ]
+  },
+  "cedar-rain-shell": {
+    "fit": "true to size",
+    "rating": 4.6,
+    "reviewCount": 158,
+    "specs": [
+      {
+        "label": "Shell",
+        "value": "3-layer waterproof, breathable"
+      },
+      {
+        "label": "Weight",
+        "value": "14.2 oz"
+      },
+      {
+        "label": "Length",
+        "value": "Hip length, covers a hipbelt"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, no fabric softener"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Priya S.",
+        "title": "Quiet fabric",
+        "text": "Does not crinkle like my old shell. Length is right with a loaded pack."
+      },
+      {
+        "author": "Jon K.",
+        "title": "Solid for the price",
+        "text": "Pit zips vent well. Hood brim could be stiffer."
+      }
+    ]
+  },
+  "brook-packable-shell": {
+    "fit": "runs small",
+    "rating": 4.2,
+    "reviewCount": 97,
+    "specs": [
+      {
+        "label": "Shell",
+        "value": "2-layer waterproof nylon"
+      },
+      {
+        "label": "Weight",
+        "value": "8.1 oz"
+      },
+      {
+        "label": "Packed size",
+        "value": "Fits in its own chest pocket"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Elena V.",
+        "title": "Lives in my daypack",
+        "text": "Stuffs down to nothing. Size up if you layer underneath."
+      },
+      {
+        "author": "Chris B.",
+        "title": "Great for sudden showers",
+        "text": "Pocket clip is handy. Not meant for all-day downpours."
+      }
+    ]
+  },
+  "summit-storm-parka": {
+    "fit": "true to size",
+    "rating": 4.7,
+    "reviewCount": 64,
+    "specs": [
+      {
+        "label": "Shell",
+        "value": "3-layer waterproof laminate"
+      },
+      {
+        "label": "Insulation",
+        "value": "Synthetic, 80 g body"
+      },
+      {
+        "label": "Weight",
+        "value": "2 lb 6 oz"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash warm, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Hannah L.",
+        "title": "Handled a whiteout",
+        "text": "Storm flap seals well and the hood brim keeps snow off my face."
+      },
+      {
+        "author": "Omar D.",
+        "title": "Roomy for layers",
+        "text": "Fits a fleece underneath with room to move. A bit heavy for summer."
+      }
+    ]
+  },
+  "pine-fleece-jacket": {
+    "fit": "runs large",
+    "rating": 4.4,
+    "reviewCount": 189,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Midweight recycled polyester fleece"
+      },
+      {
+        "label": "Weight",
+        "value": "13.5 oz"
+      },
+      {
+        "label": "Zip",
+        "value": "Full length, two hand pockets"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Sam W.",
+        "title": "Camp staple",
+        "text": "Soft inside, dries fast. I took a size down and it was perfect."
+      },
+      {
+        "author": "Tara M.",
+        "title": "Comfortable layer",
+        "text": "Pockets are deep. Cuffs are snug and stay put."
+      }
+    ]
+  },
+  "granite-insulated-jacket": {
+    "fit": "true to size",
+    "rating": 4.5,
+    "reviewCount": 141,
+    "specs": [
+      {
+        "label": "Insulation",
+        "value": "Synthetic, 60 g"
+      },
+      {
+        "label": "Shell",
+        "value": "Water-resistant ripstop"
+      },
+      {
+        "label": "Weight",
+        "value": "1 lb 4 oz"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Luis G.",
+        "title": "Belay jacket",
+        "text": "Insulation holds up when it gets damp. Fits over a harness."
+      },
+      {
+        "author": "Nina P.",
+        "title": "Wear it everywhere",
+        "text": "Not fragile, not bulky. Pockets are in the right spot."
+      }
+    ]
+  },
+  "dusk-wind-shell": {
+    "fit": "runs small",
+    "rating": 4.1,
+    "reviewCount": 76,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Ultralight ripstop nylon"
+      },
+      {
+        "label": "Weight",
+        "value": "3.9 oz"
+      },
+      {
+        "label": "Fit",
+        "value": "Slim, built for layering light"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Alex F.",
+        "title": "Barely there",
+        "text": "Blocks the wind on exposed ridges. Packs into its own pocket."
+      },
+      {
+        "author": "Rita H.",
+        "title": "Slim cut",
+        "text": "Order a size up if you want to wear a fleece under it."
+      }
+    ]
+  },
+  "ember-down-jacket": {
+    "fit": "true to size",
+    "rating": 4.8,
+    "reviewCount": 233,
+    "specs": [
+      {
+        "label": "Fill",
+        "value": "800-fill goose down"
+      },
+      {
+        "label": "Shell",
+        "value": "Water-resistant ripstop"
+      },
+      {
+        "label": "Weight",
+        "value": "1 lb 1 oz"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low with dryer balls"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Kate J.",
+        "title": "Packs small",
+        "text": "Compresses into the included sack and puffs right back up."
+      },
+      {
+        "author": "Ben A.",
+        "title": "Camp favorite",
+        "text": "Baffles are even. Hood fits over a beanie."
+      }
+    ]
+  },
+  "quarry-softshell": {
+    "fit": "true to size",
+    "rating": 4.5,
+    "reviewCount": 118,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Four-way stretch softshell"
+      },
+      {
+        "label": "Weight",
+        "value": "1 lb 2 oz"
+      },
+      {
+        "label": "Features",
+        "value": "Articulated elbows, zip chest pocket"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Dmitri K.",
+        "title": "Moves with me",
+        "text": "Great range of motion on climbs. Sheds light drizzle."
+      },
+      {
+        "author": "Grace O.",
+        "title": "Handy pockets",
+        "text": "Chest pocket fits a phone. Cuffs run slightly short."
+      }
+    ]
+  },
+  "frost-liner-jacket": {
+    "fit": "true to size",
+    "rating": 4.3,
+    "reviewCount": 102,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Grid fleece, recycled polyester"
+      },
+      {
+        "label": "Weight",
+        "value": "9.8 oz"
+      },
+      {
+        "label": "Zip",
+        "value": "Quarter zip"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Isaac M.",
+        "title": "Great under a shell",
+        "text": "Wicks well and does not feel bulky. Quarter zip is easy to vent."
+      },
+      {
+        "author": "Lena C.",
+        "title": "Daily layer",
+        "text": "Soft against the skin. Washes well."
+      }
+    ]
+  },
+  "fog-anorak-jacket": {
+    "fit": "runs large",
+    "rating": 4.2,
+    "reviewCount": 67,
+    "specs": [
+      {
+        "label": "Shell",
+        "value": "Weatherproof tightly woven cotton blend"
+      },
+      {
+        "label": "Weight",
+        "value": "1 lb 8 oz"
+      },
+      {
+        "label": "Pocket",
+        "value": "Deep kangaroo pocket"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, hang dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Paul E.",
+        "title": "Good against the wind",
+        "text": "Pullover style is easy to throw on. Runs generous in the body."
+      },
+      {
+        "author": "Yuki N.",
+        "title": "Roomy pocket",
+        "text": "Fits gloves and a hat. Hood is deep."
+      }
+    ]
+  },
+  "ridge-hiker-boots": {
+    "fit": "true to size",
+    "rating": 4.6,
+    "reviewCount": 305,
+    "specs": [
+      {
+        "label": "Upper",
+        "value": "Full-grain leather"
+      },
+      {
+        "label": "Midsole",
+        "value": "Firm shank"
+      },
+      {
+        "label": "Weight",
+        "value": "2 lb 14 oz per pair"
+      },
+      {
+        "label": "Care",
+        "value": "Brush clean, treat leather with wax"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Owen R.",
+        "title": "Support for a full pack",
+        "text": "Firm underfoot on rock. Took about a week to break in."
+      },
+      {
+        "author": "Mia T.",
+        "title": "Solid weekend boot",
+        "text": "Fit is true to size. Laces hold well."
+      }
+    ]
+  },
+  "river-trail-boots": {
+    "fit": "runs small",
+    "rating": 4.4,
+    "reviewCount": 171,
+    "specs": [
+      {
+        "label": "Upper",
+        "value": "Waterproof mesh and leather"
+      },
+      {
+        "label": "Midsole",
+        "value": "Flexible, lightweight"
+      },
+      {
+        "label": "Weight",
+        "value": "2 lb 1 oz per pair"
+      },
+      {
+        "label": "Care",
+        "value": "Rinse with water, air dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Tom H.",
+        "title": "Feels like a trail shoe",
+        "text": "Quick on mixed ground. I would order a half size up."
+      },
+      {
+        "author": "Carla B.",
+        "title": "Dry feet",
+        "text": "Handled boardwalks and puddles without trouble."
+      }
+    ]
+  },
+  "alpine-winter-boots": {
+    "fit": "true to size",
+    "rating": 4.7,
+    "reviewCount": 88,
+    "specs": [
+      {
+        "label": "Upper",
+        "value": "Waterproof leather and synthetic"
+      },
+      {
+        "label": "Lining",
+        "value": "Insulated, removable"
+      },
+      {
+        "label": "Cuff",
+        "value": "High, with snow gaiter"
+      },
+      {
+        "label": "Care",
+        "value": "Remove liner to dry, wipe clean"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Greg Y.",
+        "title": "Good for frozen approaches",
+        "text": "High cuff keeps snow out. Fits with a thick sock."
+      },
+      {
+        "author": "Anya Z.",
+        "title": "Sturdy",
+        "text": "Heavy but secure. Liner dries overnight."
+      }
+    ]
+  },
+  "camp-chukka-boots": {
+    "fit": "runs large",
+    "rating": 4.0,
+    "reviewCount": 134,
+    "specs": [
+      {
+        "label": "Upper",
+        "value": "Suede"
+      },
+      {
+        "label": "Footbed",
+        "value": "Cushioned"
+      },
+      {
+        "label": "Sole",
+        "value": "Rubber, casual tread"
+      },
+      {
+        "label": "Care",
+        "value": "Suede brush, protective spray"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Dave M.",
+        "title": "Town boot",
+        "text": "Comfortable out of the box. Not for rough trails."
+      },
+      {
+        "author": "Sofia L.",
+        "title": "Easy to wear",
+        "text": "Runs about half a size big."
+      }
+    ]
+  },
+  "north-camp-boots": {
+    "fit": "true to size",
+    "rating": 4.3,
+    "reviewCount": 95,
+    "specs": [
+      {
+        "label": "Upper",
+        "value": "Waterproof leather"
+      },
+      {
+        "label": "Lining",
+        "value": "Fleece lined"
+      },
+      {
+        "label": "Sole",
+        "value": "Lugged rubber"
+      },
+      {
+        "label": "Care",
+        "value": "Wipe clean, air dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Rob C.",
+        "title": "Easy on, easy off",
+        "text": "Pull straps help with cold hands. Lining is soft."
+      },
+      {
+        "author": "Ellie J.",
+        "title": "Camp ready",
+        "text": "Kept my feet dry on a wet weekend."
+      }
+    ]
+  },
+  "merino-crew-socks": {
+    "fit": "true to size",
+    "rating": 4.7,
+    "reviewCount": 276,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Merino wool blend"
+      },
+      {
+        "label": "Cushion",
+        "value": "Medium sole"
+      },
+      {
+        "label": "Height",
+        "value": "Crew"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Cole P.",
+        "title": "No odor after days",
+        "text": "Wore them on a three-day trip. Toe seam is smooth."
+      },
+      {
+        "author": "Ivy S.",
+        "title": "Comfortable",
+        "text": "Stay up well. Hold their shape after washing."
+      }
+    ]
+  },
+  "trail-ankle-socks": {
+    "fit": "true to size",
+    "rating": 4.2,
+    "reviewCount": 150,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Synthetic blend"
+      },
+      {
+        "label": "Cushion",
+        "value": "Light, under the ball of the foot"
+      },
+      {
+        "label": "Height",
+        "value": "Ankle"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash warm"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Noah B.",
+        "title": "Good for warm days",
+        "text": "Light and breathable. Wear in with a trail shoe."
+      },
+      {
+        "author": "Zoe A.",
+        "title": "Stay put",
+        "text": "Heel pocket holds. No rubbing."
+      }
+    ]
+  },
+  "alpine-wool-socks": {
+    "fit": "true to size",
+    "rating": 4.6,
+    "reviewCount": 83,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Heavy wool blend"
+      },
+      {
+        "label": "Cushion",
+        "value": "Full"
+      },
+      {
+        "label": "Height",
+        "value": "Over the shin"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Pete K.",
+        "title": "Stay up in a winter boot",
+        "text": "Dense knit does not slide down. Thick, so size up your boot if tight."
+      },
+      {
+        "author": "Dora N.",
+        "title": "Cold camp socks",
+        "text": "Soft after a few washes."
+      }
+    ]
+  },
+  "cushion-hike-socks": {
+    "fit": "true to size",
+    "rating": 4.5,
+    "reviewCount": 201,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Wool and nylon blend"
+      },
+      {
+        "label": "Cushion",
+        "value": "Heel and forefoot"
+      },
+      {
+        "label": "Height",
+        "value": "Crew"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Will F.",
+        "title": "Workhorse",
+        "text": "Good padding for long dirt miles."
+      },
+      {
+        "author": "Tess G.",
+        "title": "Reliable",
+        "text": "Held up after many washes."
+      }
+    ]
+  },
+  "lightweight-liner-socks": {
+    "fit": "runs small",
+    "rating": 4.1,
+    "reviewCount": 119,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Thin synthetic knit"
+      },
+      {
+        "label": "Use",
+        "value": "Worn under a wool sock"
+      },
+      {
+        "label": "Height",
+        "value": "Crew"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash warm"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Hugo L.",
+        "title": "Fewer blisters",
+        "text": "Wear under a wool sock for long descents. Very thin."
+      },
+      {
+        "author": "Mae D.",
+        "title": "Snug fit",
+        "text": "Order a size up for a looser feel."
+      }
+    ]
+  },
+  "peak-compression-socks": {
+    "fit": "runs small",
+    "rating": 4.3,
+    "reviewCount": 92,
+    "specs": [
+      {
+        "label": "Compression",
+        "value": "Graduated, firm"
+      },
+      {
+        "label": "Fiber",
+        "value": "Nylon and spandex"
+      },
+      {
+        "label": "Height",
+        "value": "Knee"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, hang dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Ravi S.",
+        "title": "Good for the drive home",
+        "text": "Firm knit, helps tired legs. Not a cushion sock."
+      },
+      {
+        "author": "Beth Q.",
+        "title": "Takes a minute to put on",
+        "text": "Worth it after a long day."
+      }
+    ]
+  },
+  "summit-ski-socks": {
+    "fit": "true to size",
+    "rating": 4.6,
+    "reviewCount": 70,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Wool blend"
+      },
+      {
+        "label": "Padding",
+        "value": "Shin pad"
+      },
+      {
+        "label": "Height",
+        "value": "Over the calf"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Axel M.",
+        "title": "Works in a stiff boot",
+        "text": "Shin pad stays flat. Not bulky."
+      },
+      {
+        "author": "Jess R.",
+        "title": "Stay up all day",
+        "text": "No bunching in the boot."
+      }
+    ]
+  },
+  "cedar-flannel-shirt": {
+    "fit": "true to size",
+    "rating": 4.5,
+    "reviewCount": 164,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Brushed cotton flannel"
+      },
+      {
+        "label": "Weight",
+        "value": "12 oz"
+      },
+      {
+        "label": "Pockets",
+        "value": "Two chest pockets"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, tumble dry low"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Hank O.",
+        "title": "Soft right away",
+        "text": "Pockets fit a folded map. Shrinks little."
+      },
+      {
+        "author": "Lila V.",
+        "title": "Great for cool mornings",
+        "text": "Warm without being thick."
+      }
+    ]
+  },
+  "sun-trail-shirt": {
+    "fit": "true to size",
+    "rating": 4.4,
+    "reviewCount": 187,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "UPF 50 nylon blend"
+      },
+      {
+        "label": "Weight",
+        "value": "6.2 oz"
+      },
+      {
+        "label": "Vents",
+        "value": "Side seam vents"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, hang dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Troy B.",
+        "title": "Sun protection that breathes",
+        "text": "Side vents help on climbs. Dries fast."
+      },
+      {
+        "author": "Nadia H.",
+        "title": "Lightweight",
+        "text": "Collar can be flipped up for neck cover."
+      }
+    ]
+  },
+  "merino-base-shirt": {
+    "fit": "true to size",
+    "rating": 4.6,
+    "reviewCount": 142,
+    "specs": [
+      {
+        "label": "Fiber",
+        "value": "Merino wool, 150 g"
+      },
+      {
+        "label": "Weight",
+        "value": "5.4 oz"
+      },
+      {
+        "label": "Sleeve",
+        "value": "Short"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, hang dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Ian P.",
+        "title": "Comfortable under a pack",
+        "text": "No chafing at the shoulder straps. Little odor."
+      },
+      {
+        "author": "Sara E.",
+        "title": "Great layer",
+        "text": "Soft and light. Pilling is minimal."
+      }
+    ]
+  },
+  "camp-henley-shirt": {
+    "fit": "runs large",
+    "rating": 4.2,
+    "reviewCount": 108,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Midweight cotton knit"
+      },
+      {
+        "label": "Placket",
+        "value": "Three buttons"
+      },
+      {
+        "label": "Weight",
+        "value": "7.8 oz"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Rex J.",
+        "title": "Layers well",
+        "text": "Fits under a fleece. Body runs a bit long."
+      },
+      {
+        "author": "Ada K.",
+        "title": "Relaxed fit",
+        "text": "Comfortable for travel days."
+      }
+    ]
+  },
+  "granite-work-shirt": {
+    "fit": "runs large",
+    "rating": 4.5,
+    "reviewCount": 76,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Canvas cotton"
+      },
+      {
+        "label": "Seams",
+        "value": "Double-needle"
+      },
+      {
+        "label": "Weight",
+        "value": "14 oz"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash warm"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Gus T.",
+        "title": "Tough",
+        "text": "Takes a beating. Stiff at first, softens with washing."
+      },
+      {
+        "author": "Wren L.",
+        "title": "Roomy",
+        "text": "Fits over a shirt with room to spare."
+      }
+    ]
+  },
+  "river-tee-shirt": {
+    "fit": "true to size",
+    "rating": 4.4,
+    "reviewCount": 238,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Heavy cotton"
+      },
+      {
+        "label": "Weight",
+        "value": "6.5 oz"
+      },
+      {
+        "label": "Neck",
+        "value": "Crew"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Cody D.",
+        "title": "Thick tee",
+        "text": "Holds its shape after many washes. Mark is subtle."
+      },
+      {
+        "author": "Fern A.",
+        "title": "Everyday shirt",
+        "text": "Comfortable and durable."
+      }
+    ]
+  },
+  "dusk-polo-shirt": {
+    "fit": "true to size",
+    "rating": 4.1,
+    "reviewCount": 59,
+    "specs": [
+      {
+        "label": "Fabric",
+        "value": "Knit polyester blend"
+      },
+      {
+        "label": "Weight",
+        "value": "5.9 oz"
+      },
+      {
+        "label": "Packing",
+        "value": "Packs flat, resists wrinkles"
+      },
+      {
+        "label": "Care",
+        "value": "Machine wash cold, hang dry"
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Mark V.",
+        "title": "Good for travel",
+        "text": "Comes out of the bag without wrinkles."
+      },
+      {
+        "author": "Pia R.",
+        "title": "Breathable",
+        "text": "Handy for a warm trailhead afternoon."
+      }
+    ]
+  }
+}

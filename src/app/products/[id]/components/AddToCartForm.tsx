@@ -4,10 +4,13 @@ import { useState, type FormEvent } from "react";
 import { ChipRadioGroup } from "@/app/components/ChipRadioGroup";
 import { CheckIcon } from "@/app/components/icons";
 import { QuantityStepper } from "@/app/components/QuantityStepper";
+import { useStockLoad } from "@/hooks/useStockLoad";
 import { useCart } from "@/stores/cart";
 import { useCartDrawer } from "@/stores/cart-drawer";
 import { getStock, hasStock } from "@/lib/catalog";
 import type { Product, Size } from "@/lib/types";
+import { SizeChartButton } from "./SizeChartButton";
+import { SoldOutPanel } from "./SoldOutPanel";
 
 type Result =
   | { kind: "added"; size: Size; colorName: string }
@@ -42,11 +45,15 @@ export function AddToCartForm({
   const addToCart = useCart((s) => s.addToCart);
   const openCart = useCartDrawer((s) => s.open);
 
+  const loading = useStockLoad(colorId);
   const stock = color && size ? getStock(product, color.id, size) : 0;
   const sizeChosen = size !== "";
-  const canAdd = Boolean(color) && sizeChosen && stock > 0;
+  const canAdd = Boolean(color) && !loading && sizeChosen && stock > 0;
+  const soldOut = Boolean(color) && !loading && sizeChosen && stock <= 0;
 
-  const stockText = !color || !sizeChosen
+  const stockText = loading
+    ? "Checking availability…"
+    : !color || !sizeChosen
     ? ""
     : stock <= 0
       ? `Sold out in ${color.name}`
@@ -86,6 +93,7 @@ export function AddToCartForm({
   }
 
   return (
+    <>
     <form onSubmit={onSubmit} className="mt-5 space-y-4">
       <ChipRadioGroup
         legend="Color"
@@ -93,6 +101,7 @@ export function AddToCartForm({
         value={colorId}
         onChange={handleColorChange}
         aside={color?.name}
+        swatchOnly
         options={product.colors.map((option) => ({
           value: option.id,
           label: option.name,
@@ -100,7 +109,19 @@ export function AddToCartForm({
         }))}
       />
 
-      {color ? (
+      {color && loading ? (
+        <div aria-hidden>
+          <p className="label-caps mb-3">Size</p>
+          <div className="flex flex-wrap gap-2.5">
+            {product.sizes.map((value) => (
+              <span
+                key={value}
+                className="h-11 w-14 animate-pulse rounded-full bg-panel"
+              />
+            ))}
+          </div>
+        </div>
+      ) : color ? (
         <ChipRadioGroup<Size | "">
           legend="Size"
           name="size"
@@ -108,6 +129,7 @@ export function AddToCartForm({
           onChange={(value) => {
             if (value) onSizeChange(value);
           }}
+          aside={<SizeChartButton category={product.category} />}
           options={product.sizes.map((value) => ({
             value,
             label: value,
@@ -138,7 +160,7 @@ export function AddToCartForm({
         disabled={!canAdd}
         className="h-12 w-full rounded-md bg-accent text-base font-bold text-ink hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-panel disabled:text-muted"
       >
-        {color && sizeChosen && stock <= 0
+        {soldOut && color
           ? `Sold out in ${color.name}`
           : "Add to cart"}
       </button>
@@ -169,5 +191,12 @@ export function AddToCartForm({
         ) : null}
       </div>
     </form>
+    {/* Outside the form: it has its own form, and forms can't nest. */}
+    {soldOut && color && size ? (
+      <div className="mt-4">
+        <SoldOutPanel product={product} colorName={color.name} size={size} />
+      </div>
+    ) : null}
+    </>
   );
 }

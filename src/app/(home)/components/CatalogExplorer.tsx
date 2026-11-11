@@ -21,7 +21,7 @@ import {
   useCatalogFilters,
 } from "@/stores/catalog-filters";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 6;
 
 type Sort = "featured" | "price-asc" | "price-desc" | "name";
 
