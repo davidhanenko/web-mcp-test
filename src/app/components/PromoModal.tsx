@@ -12,7 +12,7 @@ export function PromoModal() {
   const pathname = usePathname();
   const { ready, promoDismissed } = useMarketing();
   const closeRef = useRef<HTMLButtonElement>(null);
-  // Set only from the timer and scroll callbacks.
+  // Set only from the timer, and cleared when it stops, so every visit waits the full delay.
   const [triggered, setTriggered] = useState(false);
   // The email only unlocks the code on screen. It is never stored or sent.
   const [email, setEmail] = useState("");
@@ -25,16 +25,10 @@ export function PromoModal() {
 
   useEffect(() => {
     if (!ready || promoDismissed || hiddenHere) return;
-    const show = () => setTriggered(true);
-    const timer = window.setTimeout(show, SHOW_AFTER_MS);
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (max > 0 && window.scrollY >= max / 2) show();
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const timer = window.setTimeout(() => setTriggered(true), SHOW_AFTER_MS);
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
+      setTriggered(false);
     };
   }, [ready, promoDismissed, hiddenHere]);
 
