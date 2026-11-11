@@ -18,12 +18,13 @@ export function PromoModal() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  // Never on checkout: the shopper is paying there.
-  const onCheckout = pathname.startsWith("/checkout");
-  const open = triggered && ready && !promoDismissed && !onCheckout;
+  // Never on checkout (the shopper is paying there) or on the dev page.
+  const hiddenHere =
+    pathname.startsWith("/checkout") || pathname.startsWith("/dev");
+  const open = triggered && ready && !promoDismissed && !hiddenHere;
 
   useEffect(() => {
-    if (!ready || promoDismissed || onCheckout) return;
+    if (!ready || promoDismissed || hiddenHere) return;
     const show = () => setTriggered(true);
     const timer = window.setTimeout(show, SHOW_AFTER_MS);
     const onScroll = () => {
@@ -35,7 +36,7 @@ export function PromoModal() {
       window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [ready, promoDismissed, onCheckout]);
+  }, [ready, promoDismissed, hiddenHere]);
 
   useEffect(() => {
     if (!open) return;
