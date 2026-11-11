@@ -2,26 +2,30 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { dismissPromo, useMarketing } from "@/stores/marketing";
 import { PROMO_CODE } from "@/lib/promo";
 
+const SHOW_AFTER_MS = 6000;
+
 export function PromoModal() {
+  const pathname = usePathname();
   const { ready, promoDismissed } = useMarketing();
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [visible, setVisible] = useState(false);
+  // Set only from the timer and scroll callbacks.
+  const [triggered, setTriggered] = useState(false);
   // The email only unlocks the code on screen. It is never stored or sent.
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const open = visible && ready && !promoDismissed;
+  // Never on checkout: the shopper is paying there.
+  const onCheckout = pathname.startsWith("/checkout");
+  const open = triggered && ready && !promoDismissed && !onCheckout;
 
   useEffect(() => {
-    if (!ready || promoDismissed) {
-      setVisible(false);
-      return;
-    }
-    const show = () => setVisible(true);
-    const timer = window.setTimeout(show, 12000);
+    if (!ready || promoDismissed || onCheckout) return;
+    const show = () => setTriggered(true);
+    const timer = window.setTimeout(show, SHOW_AFTER_MS);
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (max > 0 && window.scrollY >= max / 2) show();
@@ -31,7 +35,7 @@ export function PromoModal() {
       window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [ready, promoDismissed]);
+  }, [ready, promoDismissed, onCheckout]);
 
   useEffect(() => {
     if (!open) return;
@@ -73,12 +77,12 @@ export function PromoModal() {
             ? `Use code ${PROMO_CODE} at checkout.`
             : "Join our list and we will show you the code."}
         </p>
-        <p className="mt-3 text-lg">
-          <span className="text-muted line-through">$199</span>{" "}
-          <span className="font-bold">$169</span>
-        </p>
         {revealed ? (
           <>
+            <p className="mt-3 text-lg">
+              <span className="text-muted line-through">$199</span>{" "}
+              <span className="font-bold">$169</span>
+            </p>
             <p
               role="status"
               className="mt-4 rounded-md bg-panel px-4 py-3 text-center text-2xl font-extrabold tracking-[0.12em]"
