@@ -2,19 +2,17 @@ import { getProduct } from "@/lib/catalog";
 import { ALL_SIZES, type Product, type ProductColor, type Size } from "@/lib/types";
 
 // The browser doesn't check input against inputSchema, so every tool checks its own.
-// A ToolError becomes the tool's { error, ...data } result (see withErrorResults).
 
 export class ToolError extends Error {
   constructor(
     message: string,
-    /** Extra fields for the result, so the agent can retry. */
     readonly data: Record<string, unknown> = {},
   ) {
     super(message);
   }
 }
 
-/** Agents often send null or "" for inputs they don't use. Both mean "not given". */
+// Agents often send null or "" for unused inputs; both mean "not given".
 export function isGiven(value: unknown): boolean {
   return value !== undefined && value !== null && value !== "";
 }
@@ -39,12 +37,12 @@ export function optionalOneOf<T extends string>(
   return value as T;
 }
 
-/** Any store size. Boot sizes may come as numbers (10), so they are read as text ("10"). */
+// Boot sizes may come as numbers (10), so they are read as text ("10").
 export function optionalSize(value: unknown): Size | undefined {
   return optionalOneOf(typeof value === "number" ? String(value) : value, ALL_SIZES, "size");
 }
 
-/** A price in USD above 0. 0 is a given price (it matches nothing), not "not given". */
+// 0 is a given price (it matches nothing), not "not given".
 export function optionalPrice(value: unknown, name: string): number | undefined {
   if (!isGiven(value)) return undefined;
   if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
@@ -79,7 +77,6 @@ export function requireProduct(value: unknown): Product {
   return product;
 }
 
-/** One of this product's sizes: XS–XL for apparel and socks, 8–12 for boots. */
 export function requireSizeFor(product: Product, value: unknown): Size {
   const size = typeof value === "number" ? String(value) : value;
   if (typeof size !== "string" || !(product.sizes as string[]).includes(size)) {
@@ -91,7 +88,7 @@ export function requireSizeFor(product: Product, value: unknown): Size {
   return size as Size;
 }
 
-/** One of this product's colors, by id ("black") or by name ("Black"). */
+// By id ("black") or by name ("Black").
 export function requireColorFor(product: Product, value: unknown): ProductColor {
   const wanted = typeof value === "string" ? value.trim().toLowerCase() : "";
   const color = product.colors.find(

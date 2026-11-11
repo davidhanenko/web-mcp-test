@@ -10,14 +10,11 @@ export type ShoeSize = (typeof SHOE_SIZES)[number];
 // Apparel letters or boot numbers.
 export type Size = ApparelSize | ShoeSize;
 
-/** Every size any product comes in: apparel letters, then boot numbers. */
 export const ALL_SIZES: readonly Size[] = [...SIZES, ...SHOE_SIZES];
 
-/** One color a product comes in, with its own stock per size. */
 export type ProductColor = {
   id: string;
   name: string;
-  /** CSS color used for the swatch. */
   hex: string;
   stock: Partial<Record<Size, number>>;
 };
@@ -42,31 +39,28 @@ export type SearchFilters = {
   inStockOnly?: boolean;
 };
 
-/** What the cart stores (and persists): which product, in which size and color, how many. */
 export type CartItem = {
   productId: string;
   size: Size;
-  /** `ProductColor.id` */
+  // ProductColor.id
   color: string;
   quantity: number;
 };
 
-/** A cart item joined with its product's current catalog data. */
 export type CartItemDetails = CartItem & {
   name: string;
   image: string;
   colorName: string;
   colorHex: string;
   unitPrice: number;
-  /** unitPrice × quantity */
+  // unitPrice × quantity
   subtotal: number;
 };
 
-/** The whole cart as shown to the shopper (and returned by `getCart()`). */
 export type CartDetails = {
   items: CartItemDetails[];
-  /** Price of everything in the cart. Named by the spec: `getCart(): { items, total }`. */
+  // Named by the spec: getCart(): { items, total }.
   total: number;
-  /** Number of units across all items (what the cart badge shows). */
+  // What the cart badge shows.
   totalQuantity: number;
 };

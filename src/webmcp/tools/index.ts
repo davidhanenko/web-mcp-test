@@ -9,7 +9,7 @@ import { openCheckoutTool } from "./open-checkout";
 import { searchProductsTool } from "./search-products";
 import { updateCartTool } from "./update-cart";
 
-/** The imperative tools, in the order a shopper uses them. contact_support is a form tool. */
+// contact_support is a form tool, so it is not listed here.
 export function createTools(page: ToolPage): ModelContextTool[] {
   return [
     searchProductsTool(page),

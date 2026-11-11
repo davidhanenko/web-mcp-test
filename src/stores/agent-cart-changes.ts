@@ -2,10 +2,10 @@
 
 import { create } from "zustand";
 
-/** Counts cart changes made by WebMCP tools, so checkout can tell the customer when the agent changed the cart. */
+// Lets checkout tell the customer that the agent changed the cart.
 type AgentCartChangesState = {
   count: number;
-  /** The count when checkout last opened. Changes made before that are already on screen. */
+  // Changes made before checkout opened are already on screen.
   countAtCheckoutOpen: number;
   recordChange: () => void;
   markCheckoutOpened: () => void;

@@ -34,7 +34,6 @@ export function payTotal(listTotal: number, discount: number): number {
   return Math.max(0, listTotal - discount);
 }
 
-/** The running offers, as the header strip and the sale popup show them. */
 export function getOffers(): Offer[] {
   const product = getProduct(PROMO_PRODUCT_ID);
   if (!product) return [];
@@ -51,7 +50,6 @@ export function getOffers(): Offer[] {
   ];
 }
 
-/** The offer for one product, if there is one. */
 export function getOfferFor(productId: string): Offer | undefined {
   return getOffers().find((offer) => offer.productId === productId);
 }

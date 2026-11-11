@@ -24,7 +24,7 @@ export function getColor(
   return product.colors.find((color) => color.id === colorId);
 }
 
-/** Units in stock for one color and size (0 for an unknown color). */
+// 0 for an unknown color.
 export function getStock(
   product: Product,
   colorId: string,
@@ -33,7 +33,7 @@ export function getStock(
   return getColor(product, colorId)?.stock[size] ?? 0;
 }
 
-/** True when any color (or only `colorId`, if given) has stock in `size` (or in any size). */
+// Any color unless colorId is given, any size unless size is given.
 export function hasStock(
   product: Product,
   size?: Size,
@@ -112,7 +112,6 @@ export function searchProducts(filters: SearchFilters = {}): Product[] {
   });
 }
 
-/** In-stock products from `categories`, in catalog order, skipping `excludeIds`. */
 export function getSuggestedProducts({
   categories,
   excludeIds = [],
@@ -132,7 +131,6 @@ export function getSuggestedProducts({
     .slice(0, count);
 }
 
-/** Other in-stock products from the same category. */
 export function getSimilarProducts(product: Product, count: number): Product[] {
   return getSuggestedProducts({
     categories: [product.category],
@@ -141,7 +139,6 @@ export function getSimilarProducts(product: Product, count: number): Product[] {
   });
 }
 
-/** Other products from the same category that are in stock in `size`, in catalog order. */
 export function getSimilarInSize(
   product: Product,
   size: Size,
@@ -157,11 +154,11 @@ export function getSimilarInSize(
     .slice(0, count);
 }
 
-/** How the shop grid can be ordered. "featured" is catalog order. */
+// "featured" is catalog order.
 export const SORTS = ["featured", "price-asc", "price-desc", "name"] as const;
 export type Sort = (typeof SORTS)[number];
 
-/** Products per page in the shop grid (and per search_products page). */
+// Shared by the shop grid and search_products.
 export const CATALOG_PAGE_SIZE = 6;
 
 export function sortProducts(list: Product[], sort: Sort): Product[] {
@@ -179,7 +176,7 @@ export function getPageCount(total: number): number {
   return Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
 }
 
-/** One page of `list`, counting pages from 1. */
+// Pages count from 1.
 export function getPage<T>(list: T[], page: number): T[] {
   return list.slice((page - 1) * CATALOG_PAGE_SIZE, page * CATALOG_PAGE_SIZE);
 }

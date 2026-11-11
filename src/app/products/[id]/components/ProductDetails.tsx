@@ -10,7 +10,6 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-/** Specs, fit and reviews shown below the purchase area. Page-only; tools never read it. */
 export function ProductDetails({ productId }: { productId: string }) {
   const details = getProductDetails(productId);
   if (!details) return null;

@@ -7,7 +7,7 @@ import type { ToolPage } from "@/webmcp/page";
 import { stockBySize } from "@/webmcp/results";
 import { withInjection } from "@/webmcp/test-flags";
 
-/** Same count as the page's similar products next to a sold-out size. */
+// Same as the page's similar products next to a sold-out size.
 const SIMILAR_COUNT = 3;
 
 export function getProductTool(page: ToolPage): ModelContextTool {

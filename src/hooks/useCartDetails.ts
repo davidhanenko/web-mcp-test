@@ -5,10 +5,7 @@ import { getCartDetails } from "@/lib/cart";
 import type { CartDetails } from "@/lib/types";
 import { useCart } from "@/stores/cart";
 
-/**
- * The cart with product names, prices, subtotals, total and total quantity.
- * The component re-renders only when the cart items change.
- */
+// Re-renders only when the cart items change.
 export function useCartDetails(): CartDetails {
   // Subscribe to the stored items: the array keeps the same reference until an
   // action changes it. Don't select `s.getCart()`: it returns a new object on

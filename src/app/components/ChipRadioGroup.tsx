@@ -6,9 +6,9 @@ export type ChipOption<T extends string> = {
   value: T;
   label: string;
   disabled?: boolean;
-  /** Extra text for screen readers, e.g. "(sold out)". */
+  // Extra text for screen readers, e.g. "(sold out)".
   srSuffix?: string;
-  /** CSS color for a swatch dot shown before the label. */
+  // CSS color for a dot before the label.
   swatch?: string;
 };
 
@@ -18,12 +18,11 @@ type Props<T extends string> = {
   options: ChipOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  /** Shown on the right of the legend row, outside the accessible name. */
+  // Right of the legend row, outside the accessible name.
   aside?: ReactNode;
-  /** Show a check mark inside the selected chip. */
   showCheck?: boolean;
   size?: "md" | "lg";
-  /** Round color dots with no visible text. The name stays in the tooltip and accessible name. */
+  // Color dots with no text; the name stays in the tooltip and accessible name.
   swatchOnly?: boolean;
 };
 

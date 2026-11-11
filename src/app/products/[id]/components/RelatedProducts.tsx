@@ -4,7 +4,7 @@ import { getSimilarProducts } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
-/** "You may also like" below the product details. Cards only link; nothing is added from here. */
+// Cards only link; nothing is added from here.
 export function RelatedProducts({ product }: { product: Product }) {
   const related = getSimilarProducts(product, 4);
   if (related.length === 0) return null;

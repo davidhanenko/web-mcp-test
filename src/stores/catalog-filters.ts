@@ -6,7 +6,7 @@ import type { Category, Size } from "@/lib/types";
 
 export const PRICE_MIN = 10;
 export const PRICE_STEP = 10;
-/** The highest product price, rounded up to a whole step so the slider can reach it. */
+// Rounded up to a whole step so the slider can reach it.
 export const PRICE_MAX =
   Math.ceil(
     Math.max(PRICE_MIN, ...getAllProducts().map((product) => product.price)) / PRICE_STEP,
@@ -28,7 +28,7 @@ type CatalogFiltersState = {
   size: Size | "";
   inStockOnly: boolean;
   sort: Sort;
-  /** Shop grid page, from 1. Any filter or sort change goes back to page 1. */
+  // From 1. Filter and sort setters reset it to 1.
   page: number;
   setQuery: (query: string) => void;
   setCategory: (category: Category | "") => void;
@@ -38,7 +38,6 @@ type CatalogFiltersState = {
   setSort: (sort: Sort) => void;
   setPage: (page: number) => void;
   clearAll: () => void;
-  /** Shows what search_products searched for, on the page it returned. */
   applyFromSearch: (input: SearchFilters) => void;
 };
 

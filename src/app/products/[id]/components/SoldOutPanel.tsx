@@ -7,10 +7,7 @@ import { getSimilarProducts } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import type { Product, Size } from "@/lib/types";
 
-/**
- * Shown when the chosen color and size is sold out: a back-in-stock form and a few similar
- * products. The email is never stored or sent.
- */
+// The back-in-stock email is never stored or sent.
 export function SoldOutPanel({
   product,
   colorName,

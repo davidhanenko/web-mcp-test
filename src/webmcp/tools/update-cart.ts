@@ -19,9 +19,7 @@ type Change = {
   productId: string;
   size: Size;
   color: string;
-  /** Units in the cart before this call. */
   from: number;
-  /** Units the agent asked for. */
   to: number;
 };
 

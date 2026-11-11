@@ -19,7 +19,6 @@ export const page = {
 export const tools = createTools(page);
 const client = { signal: new AbortController().signal };
 
-/** Calls a tool the way the browser does. */
 export async function run(
   name: string,
   input: ModelContextToolInput = {},
@@ -45,7 +44,7 @@ export function resetStores(): void {
   page.closeDrawer.mockClear();
 }
 
-/** Ten in-stock items with long names: the biggest cart the result size tests use. */
+// The biggest cart the result size tests use.
 export const LARGE_CART = [
   { productId: "granite-insulated-jacket", color: "grey", size: "XS", quantity: 1 },
   { productId: "lightweight-liner-socks", color: "black", size: "XS", quantity: 1 },

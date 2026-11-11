@@ -5,7 +5,6 @@ import { useCart } from "@/stores/cart";
 import { readAppliedCode } from "@/stores/marketing";
 import { ToolError } from "@/webmcp/input";
 
-/** The cart as checkout shows it: list prices, plus the applied code's discount. */
 export function cartForAgent() {
   const { items, total, totalQuantity } = useCart.getState().getCart();
   const appliedCode = readAppliedCode();
@@ -27,12 +26,10 @@ export function cartForAgent() {
   };
 }
 
-/** Sizes in stock in any color. */
 export function sizesInStock(product: Product): Size[] {
   return product.sizes.filter((size) => hasStock(product, size));
 }
 
-/** Sizes in stock, per color id. */
 export function inStockByColor(product: Product): Record<string, Size[]> {
   return Object.fromEntries(
     product.colors.map((color) => [
@@ -42,7 +39,6 @@ export function inStockByColor(product: Product): Record<string, Size[]> {
   );
 }
 
-/** Units per size, for one color. Sold-out sizes show 0. */
 export function stockBySize(
   product: Product,
   stock: Partial<Record<Size, number>>,
@@ -50,7 +46,7 @@ export function stockBySize(
   return Object.fromEntries(product.sizes.map((size) => [size, stock[size] ?? 0]));
 }
 
-/** A thrown error never reaches the agent, so it becomes the result instead. */
+// A thrown error never reaches the agent, so it becomes the result instead.
 export function errorResult(error: unknown): Record<string, unknown> {
   if (error instanceof ToolError) return { error: error.message, ...error.data };
   return {
@@ -58,7 +54,6 @@ export function errorResult(error: unknown): Record<string, unknown> {
   };
 }
 
-/** Returns errors as { error } results instead of failing the call. */
 export function withErrorResults(tool: ModelContextTool): ModelContextTool {
   return {
     ...tool,
